@@ -68,44 +68,76 @@
 
     <div class="app-body">
 
-      <!-- Sidebar Menu (Sincronización API, Lista Negra y Actualizaciones) -->
+      <!-- Sidebar Menu -->
       <aside class="app-sidebar">
         <nav class="menu">
-          <div class="menu-header">Sincronización y Servidor</div>
+          <div class="menu-header">Principal</div>
 
-          <button class="nav-item active" data-target="section-apisync" data-title="Sincronización con GitHub" data-subtitle="Sincroniza las listas de bloqueo desde el repositorio">
+          <button class="nav-item active" data-target="section-stats" data-title="Estadísticas" data-subtitle="Métricas de bloqueo y rendimiento">
+            <span class="nav-icon" aria-hidden="true">📊</span>
+            <span class="nav-label">Estadísticas</span>
+          </button>
+
+          <button class="nav-item" data-target="section-apisync" data-title="Sincronización con GitHub" data-subtitle="Sincroniza las listas de bloqueo desde el repositorio">
             <span class="nav-icon" aria-hidden="true">📦</span>
             <span class="nav-label">Sincronización GitHub</span>
           </button>
 
+          <div class="menu-header">Categorías de Bloqueo</div>
+
+          <button class="nav-item" data-target="section-categories" data-title="Categorías" data-subtitle="Activa o desactiva categorías de sitios">
+            <span class="nav-icon" aria-hidden="true">📁</span>
+            <span class="nav-label">Categorías (10)</span>
+          </button>
+
           <div class="menu-header">Reglas de Bloqueo</div>
 
-          <button class="nav-item" data-target="section-blocklist" data-title="Lista de Bloqueo Personalizada (Lista Negra)" data-subtitle="Sitios web restringidos ingresados por ti y sincronizados">
+          <button class="nav-item" data-target="section-action" data-title="Acción de Bloqueo" data-subtitle="Qué hacer cuando se accede a un sitio bloqueado">
+            <span class="nav-icon" aria-hidden="true">🛡️</span>
+            <span class="nav-label">Acción de Bloqueo</span>
+          </button>
+
+          <button class="nav-item" data-target="section-schedule" data-title="Horario" data-subtitle="Define cuándo estará activo el bloqueo">
+            <span class="nav-icon" aria-hidden="true">⏰</span>
+            <span class="nav-label">Horario</span>
+          </button>
+
+          <button class="nav-item" data-target="section-blocklist" data-title="Lista Negra" data-subtitle="Sitios web restringidos personalizados">
             <span class="nav-icon" aria-hidden="true">📋</span>
             <span class="nav-label">Lista Negra</span>
           </button>
 
-          <button class="nav-item" data-target="section-updates" data-title="Actualizaciones del Sistema" data-subtitle="Avisos e instrucciones emitidas por el Administrador Global">
-            <span class="nav-icon" aria-hidden="true">📢</span>
-            <span class="nav-label">Actualizaciones</span>
+          <button class="nav-item" data-target="section-whitelist" data-title="Lista Blanca" data-subtitle="Excepciones que nunca se bloquean">
+            <span class="nav-icon" aria-hidden="true">✅</span>
+            <span class="nav-label">Lista Blanca</span>
           </button>
 
-          <div class="menu-header">Seguridad</div>
+          <button class="nav-item" data-target="section-youtube" data-title="YouTube Shorts" data-subtitle="Bloquear Shortos de YouTube">
+            <span class="nav-icon" aria-hidden="true">📺</span>
+            <span class="nav-label">YouTube Shorts</span>
+          </button>
 
-          <button class="nav-item" data-target="section-security" data-title="Seguridad y Protección PIN" data-subtitle="Protege la configuración con un código PIN de 4 dígitos">
+          <div class="menu-header">Sistema</div>
+
+          <button class="nav-item" data-target="section-security" data-title="Seguridad PIN" data-subtitle="Protege la configuración con un código PIN">
             <span class="nav-icon" aria-hidden="true">🔒</span>
             <span class="nav-label">Seguridad PIN</span>
           </button>
 
-          <button class="nav-item" data-target="section-stats" data-title="Estadísticas de Bloqueo" data-subtitle="Métricas de sitios interceptados">
-            <span class="nav-icon" aria-hidden="true">📊</span>
-            <span class="nav-label">Estadísticas</span>
+          <button class="nav-item" data-target="section-backup" data-title="Copia de Seguridad" data-subtitle="Exporta e importa tu configuración">
+            <span class="nav-icon" aria-hidden="true">💾</span>
+            <span class="nav-label">Copia de Seguridad</span>
+          </button>
+
+          <button class="nav-item" data-target="section-updates" data-title="Actualizaciones" data-subtitle="Avisos del sistema">
+            <span class="nav-icon" aria-hidden="true">📢</span>
+            <span class="nav-label">Actualizaciones</span>
           </button>
         </nav>
 
         <div class="sidebar-footer">
           <span class="footer-author">Host Blocker</span>
-          <span class="footer-version">v1.0.0 - Sincronizado con GitHub</span>
+          <span class="footer-version">v1.0.0 - GitHub Sync</span>
         </div>
       </aside>
 

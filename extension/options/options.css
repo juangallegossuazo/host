@@ -435,21 +435,20 @@ html[data-theme="light"] .moon-icon { display: block; }
 }
 
 .page-header {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
 
 .page-header h1 {
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--heading);
-  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
 }
 
 .page-header p {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin-top: 0;
 }
@@ -530,158 +529,72 @@ html[data-theme="light"] .moon-icon { display: block; }
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .stat-box {
-  background: linear-gradient(145deg, var(--surface-2) 0%, var(--surface) 100%);
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 24px 20px;
+  border-radius: var(--r-md);
+  padding: 14px;
   text-align: center;
-  transition: all 0.3s var(--ease);
-  position: relative;
-  overflow: hidden;
-}
-
-.stat-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--accent-gradient);
-  opacity: 0.8;
-}
-
-.stat-box::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+  transition: all 0.2s var(--ease);
 }
 
 .stat-box:hover {
   border-color: var(--theme-border);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.2);
-}
-
-.stat-box:hover::after {
-  opacity: 1;
-}
-
-.stat-box:nth-child(1)::before {
-  background: linear-gradient(90deg, #10b981, #34d399);
-}
-
-.stat-box:nth-child(2)::before {
-  background: linear-gradient(90deg, #6366f1, #818cf8);
-}
-
-.stat-box:nth-child(3)::before {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 14px;
-  font-size: 22px;
-  background: var(--theme-soft);
-  border: 1px solid var(--theme-border);
-}
-
-.stat-box:nth-child(1) .stat-icon {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.3);
-}
-
-.stat-box:nth-child(2) .stat-icon {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.3);
-}
-
-.stat-box:nth-child(3) .stat-icon {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.3);
+  font-size: 16px;
+  margin-bottom: 6px;
 }
 
 .stat-number {
-  font-size: 42px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 700;
   line-height: 1;
-  margin-bottom: 8px;
-  color: var(--heading);
+  margin-bottom: 4px;
+  color: var(--text);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -1px;
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.stat-box:nth-child(1) .stat-number {
-  background: linear-gradient(135deg, #10b981, #34d399);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.stat-box:nth-child(3) .stat-number {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  -webkit-background-clip: text;
-  background-clip: text;
 }
 
 .stat-label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 /* ── Block history ────────────────────────────────────────────────── */
 
 .history-block {
-  background: var(--surface);
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 20px;
+  border-radius: var(--r-md);
+  padding: 14px;
 }
 
 .history-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
 }
 
 .history-head h3 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .history-head p {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .history-actions {

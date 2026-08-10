@@ -1108,7 +1108,10 @@ html[data-theme="light"] .moon-icon { display: block; }
 }
 
 .blocklist-domain-row {
-  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px 6px 12px;
   font-size: 11px;
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border);
@@ -1121,6 +1124,82 @@ html[data-theme="light"] .moon-icon { display: block; }
 .blocklist-category.expanded {
   border-color: var(--theme-border);
 }
+
+/* ── Category add domain row ─────────────────────────────────────── */
+
+.category-add-row {
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--border);
+}
+
+.category-add-input {
+  flex: 1;
+  padding: 5px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+
+.category-add-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.category-add-input:focus {
+  border-color: var(--theme);
+  box-shadow: 0 0 0 2px var(--theme-soft);
+}
+
+.category-add-btn {
+  padding: 0 10px;
+  background: var(--theme);
+  color: var(--theme-ink);
+  border: 1px solid var(--theme);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s var(--ease);
+  line-height: 1;
+}
+
+.category-add-btn:hover {
+  background: var(--theme-hover);
+  border-color: var(--theme-hover);
+}
+
+/* ── Blocklist domain row with remove button ─────────────────────── */
+
+.blocklist-domain-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blocklist-domain-row .domain-remove {
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
+  opacity: 0.5;
+  transition: opacity 0.15s var(--ease), background 0.15s var(--ease), color 0.15s var(--ease);
+}
+
+.blocklist-domain-row:hover .domain-remove {
+  opacity: 1;
+}
+
+.site-unblock {
+  background: transparent;
+  border: 1px solid var(--border);
   color: var(--theme);
   font-size: 12px;
   font-weight: 600;

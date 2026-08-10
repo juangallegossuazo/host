@@ -246,7 +246,25 @@ async function renderCustomBlocklist() {
     for (const domain of domains) {
       const row = document.createElement('div');
       row.className = 'blocklist-domain-row';
-      row.textContent = domain;
+
+      const domainSpan = document.createElement('span');
+      domainSpan.className = 'blocklist-domain-name';
+      domainSpan.textContent = domain;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'domain-remove';
+      removeBtn.textContent = '\u00D7';
+      removeBtn.title = 'Remove domain';
+      removeBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        settings.customBlocklist = settings.customBlocklist.filter(d => d !== domain);
+        await saveSettings({ customBlocklist: settings.customBlocklist });
+        row.remove();
+        const newCount = list.querySelectorAll('.blocklist-domain-row').length;
+        count.textContent = newCount;
+      });
+
+      row.append(domainSpan, removeBtn);
       list.appendChild(row);
     }
 
@@ -387,14 +405,14 @@ async function renderCategories() {
     const toggle = document.createElement('label');
     toggle.className = 'switch';
 
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.checked = isActive;
+    const toggleInput = document.createElement('input');
+    toggleInput.type = 'checkbox';
+    toggleInput.checked = isActive;
 
     const slider = document.createElement('span');
     slider.className = 'slider';
 
-    toggle.append(input, slider);
+    toggle.append(toggleInput, slider);
 
     header.append(left, toggle);
 
@@ -409,15 +427,65 @@ async function renderCategories() {
       table.appendChild(row);
     }
 
+    const addRow = document.createElement('div');
+    addRow.className = 'category-add-row';
+
+    const addInput = document.createElement('input');
+    addInput.type = 'text';
+    addInput.className = 'category-add-input';
+    addInput.placeholder = 'Add domain...';
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'category-add-btn';
+    addBtn.textContent = '+';
+
+    async function addDomainToCategory() {
+      let domain = addInput.value.trim().toLowerCase();
+      if (!domain) return;
+
+      domain = domain
+        .replace(/^https?:\/\//, '')
+        .replace(/\/.*$/, '')
+        .replace(/^www\./, '')
+        .replace(/^\*\./, '');
+
+      if (!domain || domain.includes(' ') || !domain.includes('.')) {
+        addInput.style.borderColor = '#EF4444';
+        setTimeout(() => { addInput.style.borderColor = ''; }, 1500);
+        return;
+      }
+
+      if (settings.customBlocklist.includes(domain)) {
+        addInput.style.borderColor = '#f59e0b';
+        setTimeout(() => { addInput.style.borderColor = ''; }, 1500);
+        return;
+      }
+
+      settings.customBlocklist.push(domain);
+      await saveSettings({ customBlocklist: settings.customBlocklist });
+      syncWithDjangoApi().catch(() => {});
+      addInput.value = '';
+      renderCategories();
+    }
+
+    addBtn.addEventListener('click', addDomainToCategory);
+    addInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addDomainToCategory();
+    });
+
+    addRow.append(addInput, addBtn);
+    table.appendChild(addRow);
+
     header.addEventListener('click', (e) => {
-      if (e.target === input || e.target === slider || toggle.contains(e.target)) return;
+      if (e.target === toggleInput || e.target === slider || toggle.contains(e.target)) return;
+      if (e.target === addInput || e.target === addBtn) return;
       const isOpen = table.style.display !== 'none';
       table.style.display = isOpen ? 'none' : 'block';
       card.classList.toggle('expanded', !isOpen);
     });
 
-    input.addEventListener('change', async () => {
-      settings.categoryToggles[catId] = input.checked;
+    toggleInput.addEventListener('change', async () => {
+      settings.categoryToggles[catId] = toggleInput.checked;
       await saveSettings({ categoryToggles: settings.categoryToggles });
       chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
     });

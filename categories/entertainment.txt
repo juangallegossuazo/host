@@ -1,0 +1,114 @@
+# --- ENTRETENIMIENTO ---
+# Redes sociales, streaming y entretenimiento - Bloqueados por Host Blocker
+
+# Redes sociales
+0.0.0.0 facebook.com
+0.0.0.0 www.facebook.com
+0.0.0.0 m.facebook.com
+0.0.0.0 instagram.com
+0.0.0.0 www.instagram.com
+0.0.0.0 twitter.com
+0.0.0.0 www.twitter.com
+0.0.0.0 x.com
+0.0.0.0 www.x.com
+0.0.0.0 tiktok.com
+0.0.0.0 www.tiktok.com
+0.0.0.0 snapchat.com
+0.0.0.0 www.snapchat.com
+0.0.0.0 pinterest.com
+0.0.0.0 www.pinterest.com
+0.0.0.0 reddit.com
+0.0.0.0 www.reddit.com
+0.0.0.0 linkedin.com
+0.0.0.0 www.linkedin.com
+0.0.0.0 discord.com
+0.0.0.0 www.discord.com
+0.0.0.0 telegram.org
+0.0.0.0 web.telegram.org
+
+# Streaming video
+0.0.0.0 netflix.com
+0.0.0.0 www.netflix.com
+0.0.0.0 hulu.com
+0.0.0.0 www.hulu.com
+0.0.0.0 primevideo.com
+0.0.0.0 www.primevideo.com
+0.0.0.0 disneyplus.com
+0.0.0.0 www.disneyplus.com
+0.0.0.0 hbomax.com
+0.0.0.0 www.hbomax.com
+0.0.0.0 max.com
+0.0.0.0 www.max.com
+0.0.0.0 peacocktv.com
+0.0.0.0 www.peacocktv.com
+0.0.0.0 paramountplus.com
+0.0.0.0 www.paramountplus.com
+0.0.0.0 appletv.com
+0.0.0.0 www.appletv.com
+
+# Streaming musica
+0.0.0.0 spotify.com
+0.0.0.0 www.spotify.com
+0.0.0.0 open.spotify.com
+0.0.0.0 soundcloud.com
+0.0.0.0 www.soundcloud.com
+0.0.0.0 deezer.com
+0.0.0.0 www.deezer.com
+0.0.0.0 tidal.com
+0.0.0.0 www.tidal.com
+
+# Streaming juegos
+0.0.0.0 twitch.tv
+0.0.0.0 www.twitch.tv
+0.0.0.0 afreecatv.com
+0.0.0.0 www.afreecatv.com
+0.0.0.0 bilibili.com
+0.0.0.0 www.bilibili.com
+
+# Entretenimiento general
+0.0.0.0 buzzfeed.com
+0.0.0.0 www.buzzfeed.com
+0.0.0.0 9gag.com
+0.0.0.0 www.9gag.com
+0.0.0.0 imgur.com
+0.0.0.0 www.imgur.com
+0.0.0.0 ifunny.co
+0.0.0.0 www.ifunny.co
+
+# Compras
+0.0.0.0 amazon.com
+0.0.0.0 www.amazon.com
+0.0.0.0 ebay.com
+0.0.0.0 www.ebay.com
+0.0.0.0 aliexpress.com
+0.0.0.0 www.aliexpress.com
+0.0.0.0 mercadolibre.com
+0.0.0.0 www.mercadolibre.com
+
+# Apuestas
+0.0.0.0 bet365.com
+0.0.0.0 www.bet365.com
+0.0.0.0 draftkings.com
+0.0.0.0 www.draftkings.com
+0.0.0.0 fanduel.com
+0.0.0.0 www.fanduel.com
+0.0.0.0 pokerstars.com
+0.0.0.0 www.pokerstars.com
+0.0.0.0 888.com
+0.0.0.0 www.888.com
+0.0.0.0 betway.com
+0.0.0.0 www.betway.com
+0.0.0.0 unibet.com
+0.0.0.0 www.unibet.com
+
+# Dating
+0.0.0.0 tinder.com
+0.0.0.0 www.tinder.com
+0.0.0.0 bumble.com
+0.0.0.0 www.bumble.com
+0.0.0.0 okcupid.com
+0.0.0.0 www.okcupid.com
+0.0.0.0 match.com
+0.0.0.0 www.match.com
+0.0.0.0 grindr.com
+0.0.0.0 www.grindr.com

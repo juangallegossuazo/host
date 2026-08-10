@@ -3,405 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Host Blocker Sync</title>
+  <title>Host Blocker</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      width: 420px;
-      min-height: 500px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
-      color: #333;
+      width: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      color: #1a1a2e;
     }
-    
     .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px;
-      text-align: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 16px 20px;
       color: white;
-    }
-    
-    .header h1 {
-      font-size: 20px;
-      margin-bottom: 5px;
-    }
-    
-    .header p {
-      font-size: 12px;
-      opacity: 0.9;
-    }
-    
-    .sync-status {
-      background: #e3f2fd;
-      padding: 10px 15px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid #bbdefb;
     }
-    
-    .sync-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #4caf50;
-      animation: pulse 2s infinite;
+    .header h1 { font-size: 18px; }
+    .header .sync-info { font-size: 11px; opacity: 0.8; }
+    .actions-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      border-bottom: 1px solid #e9ecef;
     }
-    
-    .sync-dot.offline {
-      background: #f44336;
-      animation: none;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    
-    .sync-text {
+    .actions-bar button {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
       font-size: 12px;
-      color: #666;
+      font-weight: 500;
+      transition: all 0.2s;
     }
-    
-    .container {
-      padding: 15px;
-      max-height: 400px;
-      overflow-y: auto;
+    .actions-bar button:hover { background: #f1f3f5; }
+    .actions-bar button.primary { background: #667eea; color: white; border-color: #667eea; }
+    .actions-bar button.primary:hover { background: #5a6fd6; }
+    .actions-bar button.danger { color: #e03131; border-color: #ffc9c9; }
+    .actions-bar button.danger:hover { background: #fff5f5; }
+    .stats {
+      padding: 10px 20px;
+      background: #fff3bf;
+      font-size: 12px;
+      color: #868e96;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #666;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
+    .stats .count { font-weight: 700; color: #1a1a2e; }
+    .categories { padding: 12px 20px; }
     .category {
       background: white;
       border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 8px;
+      border: 1px solid #e9ecef;
+      overflow: hidden;
     }
-    
     .category-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-    }
-    
-    .category-name {
-      font-size: 14px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .category-count {
-      background: #e0e0e0;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      color: #666;
-    }
-    
-    .toggle {
-      position: relative;
-      width: 44px;
-      height: 22px;
-    }
-    
-    .toggle input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    
-    .slider {
-      position: absolute;
+      padding: 12px;
       cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: 0.3s;
-      border-radius: 22px;
-    }
-    
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: 0.3s;
-      border-radius: 50%;
-    }
-    
-    input:checked + .slider {
-      background-color: #2196F3;
-    }
-    
-    input:checked + .slider:before {
-      transform: translateX(22px);
-    }
-    
-    .domain-list {
-      max-height: 120px;
-      overflow-y: auto;
-      font-size: 11px;
-      color: #888;
-      border-top: 1px solid #eee;
-      padding-top: 8px;
-      display: none;
-    }
-    
-    .domain-list.show {
-      display: block;
-    }
-    
-    .domain-item {
-      padding: 3px 0;
-      border-bottom: 1px solid #f5f5f5;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .domain-item:last-child {
-      border-bottom: none;
-    }
-    
-    .domain-actions {
-      display: flex;
-      gap: 5px;
-    }
-    
-    .domain-btn {
-      padding: 2px 6px;
-      font-size: 10px;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    
-    .domain-btn.block {
-      background: #ffcdd2;
-      color: #c62828;
-    }
-    
-    .domain-btn.allow {
-      background: #c8e6c9;
-      color: #2e7d32;
-    }
-    
-    .show-more {
-      color: #2196F3;
-      cursor: pointer;
-      font-size: 12px;
-      text-align: center;
-      padding: 5px;
-    }
-    
-    .show-more:hover {
-      text-decoration: underline;
-    }
-    
-    .footer {
-      background: white;
-      padding: 15px;
-      border-top: 1px solid #eee;
-      display: flex;
       gap: 10px;
     }
-    
-    .btn {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
+    .category-header:hover { background: #f8f9fa; }
+    .cat-icon { font-size: 20px; }
+    .cat-info { flex: 1; }
+    .cat-name { font-size: 14px; font-weight: 600; }
+    .cat-count { font-size: 11px; color: #868e96; }
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #ced4da;
+      border-radius: 22px;
       cursor: pointer;
+      transition: 0.3s;
+    }
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    input:checked + .slider { background: #667eea; }
+    input:checked + .slider::before { transform: translateX(18px); }
+    .expand-btn {
+      font-size: 11px;
+      color: #667eea;
+      padding: 0 12px 10px;
+      cursor: pointer;
+    }
+    .expand-btn:hover { text-decoration: underline; }
+    .domain-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s;
+    }
+    .domain-list.open { max-height: 300px; overflow-y: auto; }
+    .domain-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 12px 6px 42px;
+      font-size: 12px;
+      color: #495057;
+      border-top: 1px solid #f1f3f5;
+      gap: 8px;
+    }
+    .domain-item label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex: 1;
+    }
+    .domain-item input[type="checkbox"] {
+      accent-color: #667eea;
+    }
+    .domain-item.blocked { color: #e03131; text-decoration: line-through; }
+    .domain-item.allowed { color: #2f9e44; }
+    .empty-msg {
+      padding: 20px;
+      text-align: center;
+      color: #adb5bd;
       font-size: 13px;
-      font-weight: 500;
     }
-    
-    .btn-primary {
-      background: #2196F3;
-      color: white;
+    .footer {
+      padding: 12px 20px;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      text-align: center;
     }
-    
-    .btn-primary:hover {
-      background: #1976D2;
+    .footer a {
+      font-size: 11px;
+      color: #868e96;
+      text-decoration: none;
     }
-    
-    .btn-secondary {
-      background: #e0e0e0;
-      color: #333;
+    .footer a:hover { color: #667eea; }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #868e96;
     }
-    
-    .btn-secondary:hover {
-      background: #bdbdbd;
+    .loading .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid #e9ecef;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 10px;
     }
-    
-    .btn-danger {
-      background: #f44336;
-      color: white;
-    }
-    
-    .btn-danger:hover {
-      background: #d32f2f;
-    }
-    
-    .status-bar {
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .toast {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
       background: #333;
       color: white;
-      padding: 8px 15px;
+      padding: 8px 16px;
+      border-radius: 6px;
       font-size: 12px;
-      text-align: center;
       display: none;
+      z-index: 100;
     }
-    
-    .status-bar.show {
-      display: block;
-    }
-    
-    .tab-container {
-      display: flex;
-      border-bottom: 1px solid #ddd;
-      background: white;
-    }
-    
-    .tab {
-      flex: 1;
-      padding: 10px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-      color: #666;
-      border-bottom: 2px solid transparent;
-    }
-    
-    .tab.active {
-      color: #2196F3;
-      border-bottom-color: #2196F3;
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    .import-export {
-      padding: 15px;
-    }
-    
-    .textarea {
-      width: 100%;
-      height: 150px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 11px;
-      resize: vertical;
-      margin-bottom: 10px;
-    }
-    
-    .help-text {
-      font-size: 11px;
-      color: #888;
-      margin-bottom: 10px;
-    }
+    .toast.show { display: block; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>🛡️ Host Blocker Sync</h1>
-    <p>Sincroniza con el archivo hosts del sistema</p>
-  </div>
-  
-  <div class="sync-status">
-    <div class="sync-dot" id="syncDot"></div>
-    <span class="sync-text" id="syncText">Conectado - Leyendo hosts...</span>
-  </div>
-  
-  <div class="tab-container">
-    <div class="tab active" data-tab="categories">Categorías</div>
-    <div class="tab" data-tab="importexport">Importar/Exportar</div>
-    <div class="tab" data-tab="settings">Configuración</div>
-  </div>
-  
-  <div class="tab-content active" id="categories">
-    <div class="container" id="categoriesContainer">
-      <!-- Categorías se cargan dinámicamente -->
+    <h1>🛡️ Host Blocker</h1>
+    <div>
+      <div class="sync-info" id="lastSync">Sincronizando...</div>
     </div>
   </div>
-  
-  <div class="tab-content" id="importexport">
-    <div class="import-export">
-      <div class="section-title">Importar Hosts</div>
-      <p class="help-text">Pega el contenido de tu archivo hosts aquí:</p>
-      <textarea class="textarea" id="hostsInput" placeholder="# Contenido del archivo hosts..."></textarea>
-      <button class="btn btn-primary" id="importBtn" style="width: 100%">📥 Importar Hosts</button>
-      
-      <div class="section-title" style="margin-top: 20px;">Exportar Configuración</div>
-      <p class="help-text">Descarga tu archivo hosts actualizado:</p>
-      <button class="btn btn-primary" id="exportBtn" style="width: 100%">📤 Exportar Hosts</button>
+
+  <div class="actions-bar">
+    <button class="primary" id="syncBtn">⚡ Sincronizar</button>
+    <button class="danger" id="blockAll">✓ Bloquear Todo</button>
+    <button id="unblockAll">✕ Desbloquear Todo</button>
+  </div>
+
+  <div class="stats" id="statsBar">
+    <span>Sitios bloqueados: <span class="count" id="blockedCount">0</span></span>
+    <span>Domnios cargados: <span class="count" id="totalDomains">0</span></span>
+  </div>
+
+  <div class="categories" id="categoriesContainer">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Cargando categorías...</div>
     </div>
   </div>
-  
-  <div class="tab-content" id="settings">
-    <div class="import-export">
-      <div class="section-title">Opciones de Sincronización</div>
-      <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-        <input type="checkbox" id="autoSync" checked>
-        <span style="font-size: 13px;">Sincronización automática al iniciar</span>
-      </label>
-      <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-        <input type="checkbox" id="detectContent" checked>
-        <span style="font-size: 13px;">Detectar contenido bloqueado</span>
-      </label>
-      <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-        <input type="checkbox" id="showOverlay" checked>
-        <span style="font-size: 13px;">Mostrar overlay al bloquear</span>
-      </label>
-      
-      <div class="section-title" style="margin-top: 20px;">Estadísticas</div>
-      <div style="font-size: 12px; color: #666; line-height: 1.8;">
-        <p>Dominios bloqueados: <strong id="totalBlocked">0</strong></p>
-        <p>Categorías activas: <strong id="activeCategories">0</strong></p>
-        <p>Última sincronización: <strong id="lastSync">Nunca</strong></p>
-      </div>
-    </div>
-  </div>
-  
+
   <div class="footer">
-    <button class="btn btn-secondary" id="refreshBtn">🔄 Actualizar</button>
-    <button class="btn btn-primary" id="syncBtn">⚡ Sincronizar</button>
+    <a href="https://github.com/juangallegossuazo/host" target="_blank">📦 Repositorio en GitHub</a>
   </div>
-  
-  <div class="status-bar" id="statusBar"></div>
-  
+
+  <div class="toast" id="toast"></div>
+
   <script src="popup.js"></script>
 </body>
 </html>

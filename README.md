@@ -1,108 +1,70 @@
-# 🛡️ Host Blocker - Filtro de Contenido
+# 🛡️ Host Blocker
 
-Sistema de bloqueo de sitios web no deseados mediante el archivo `hosts` del sistema. Diseñado para proteger a niños y jóvenes de contenido inapropiado.
+Extensión de navegador que bloquea sitios web no deseados. La lista se sincroniza desde este repositorio de GitHub.
 
-## 📋 Categorías Bloqueadas
+## Cómo funciona
 
-### 🎮 Juegos Online
-- Sitios de juegos web (Friv, CrazyGames, Minijuegos, etc.)
-- Plataformas de juegos en línea
-- Portales de juegos flash/HTML5
+1. Instalas la extensión en Chrome, Firefox o Edge
+2. La extensión descarga la lista de dominios desde este repositorio
+3. Tú eliges qué categorías o dominios bloquear
+4. La extensión bloquea el acceso directamente en el navegador
 
-### 🔞 Contenido XXX/Adulto
-- Sitios pornográficos principales
-- Contenido para adultos
-- Sitios de dating para adultos
+**No modifica el archivo hosts del sistema.** Todo el bloqueo lo hace la extensión.
 
-### 📥 Descargas No Deseadas
-- Portales de descarga de software (Softonic, Uptodown, etc.)
-- Sitios de descarga no seguros
+## Categorías
 
-### 🎯 Entretenimiento Distractor
-- Plataformas de streaming
-- Redes sociales
-- Sitios de entretenimiento general
+| Categoría | Icono | Descripción |
+|-----------|-------|-------------|
+| Contenido Adulto | 🔞 | Pornografía, cams, dating adulto |
+| Juegos Online | 🎮 | Plataformas de juegos web |
+| Descargas | 📥 | Softonic, torrents, descargas |
+| Entretenimiento | 📺 | Redes sociales, streaming, compras |
 
-## 🚀 Instalación
+## Instalación de la extensión
 
-### Windows
-1. Copiar el archivo `hosts` a `C:\Windows\System32\drivers\etc\`
-2. Reemplazar el archivo existente (hacer backup primero)
-3. Ejecutar `ipconfig /flushdns` en CMD como administrador
+### Chrome / Edge
+1. Abre `chrome://extensions/`
+2. Activa **Modo desarrollador**
+3. Haz clic en **Cargar extensión sin empaquetar**
+4. Selecciona la carpeta `extension/`
 
-### macOS/Linux
-1. Copiar el archivo `hosts` a `/etc/hosts`
-2. Ejecutar `sudo dscacheutil -flushcache` (macOS) o `sudo systemd-resolve --flush-caches` (Linux)
+### Firefox
+1. Abre `about:debugging#/runtime/this-firefox`
+2. Haz clic en **Cargar componente temporal**
+3. Selecciona `extension/manifest.json`
 
-## 🔧 Extensión del Navegador (Sincronización con Hosts)
+## Uso
 
-La extensión **sincroniza automáticamente con el archivo hosts** del sistema:
+- Haz clic en el ícono de la extensión para abrir el panel
+- **Sincronizar**: Descarga la última lista desde GitHub
+- **Bloquear Todo**: Activa todas las categorías
+- **Desbloquear Todo**: Desactiva todas las categorías
+- Activa/desactiva categorías con los toggles
+- Expande cada categoría para elegir dominios individuales
 
-### Funcionalidades principales:
-- ✅ **Lectura del hosts**: Importa y sincroniza los dominios bloqueados
-- ✅ **Detección de contenido**: Identifica categorías por palabras clave
-- ✅ **Overlay visual**: Muestra página de bloqueo personalizada
-- ✅ **Gestión por categorías**: Organiza dominios en Adulto/Juegos/Descargas/Entretenimiento
-- ✅ **Exportar hosts**: Genera archivo hosts actualizado para el sistema
-- ✅ **Sincronización automática**: Actualiza cada 5 minutos
-
-### Cómo funciona:
-1. La extensión lee el archivo hosts del sistema
-2. Clasifica los dominios en categorías automáticamente
-3. Detecta contenido bloqueado en páginas web
-4. Permite agregar/eliminar dominios desde la interfaz
-5. Exporta el hosts actualizado para aplicar en el sistema
-
-## 📁 Estructura del Proyecto
+## Estructura
 
 ```
 host/
-├── README.md              # Esta documentación
-├── hosts                  # Archivo hosts principal (24,000+ dominios)
-├── LICENSE                # Licencia MIT
-└── extension/             # Extensión del navegador (sincroniza con hosts)
-    ├── manifest.json      # Configuración de la extensión
-    ├── popup.html         # Interfaz de usuario
-    ├── popup.js           # Lógica de sincronización
-    ├── content.js         # Detección de contenido
-    ├── background.js      # Manejo de bloqueo
-    ├── blocked.html       # Página de bloqueo visual
-    └── icons/             # Iconos de la extensión
-        └── icon.svg       # Icono principal
+├── README.md
+├── hosts                    # Lista completa (para referencia)
+├── categories/              # Listas por categoría (la extensión las descarga)
+│   ├── adult.txt
+│   ├── games.txt
+│   ├── downloads.txt
+│   └── entertainment.txt
+└── extension/               # La extensión del navegador
+    ├── manifest.json
+    ├── background.js        # Sincronización y bloqueo
+    ├── popup.html/js        # Interfaz de usuario
+    ├── content.js           # Overlay de bloqueo
+    └── icons/
 ```
 
-## 🔧 Instalación de la Extensión
+## Actualizar la lista
 
-### Chrome/Edge:
-1. Abre `chrome://extensions/`
-2. Activa "Modo desarrollador"
-3. Haz clic en "Cargar extensión sin empaquetar"
-4. Selecciona la carpeta `extension/`
+Edita los archivos en `categories/` y haz push a GitHub. La extensión sincroniza automáticamente cada 30 minutos, o puedes pulsar "Sincronizar" en el panel.
 
-### Firefox:
-1. Abre `about:debugging#/runtime/this-firefox`
-2. Haz clic en "Cargar componente temporal"
-3. Selecciona el archivo `manifest.json`
+## Licencia
 
-### Sincronización con el Hosts:
-1. La extensión carga automáticamente los dominios del hosts
-2. Puedes importar tu hosts manualmente desde la pestaña "Importar/Exportar"
-3. Los cambios se reflejan en tiempo real
-4. Exporta el hosts actualizado para aplicar en el sistema
-
-## ⚠️ Notas Importantes
-
-- **Backup siempre**: Antes de modificar el archivo hosts, crea una copia de seguridad
-- **Permisos de administrador**: Se necesitan permisos de root/admin para modificar el hosts
-- **Actualizaciones**: Las listas se actualizan periódicamente con nuevos sitios
-
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Para agregar nuevos sitios a bloquear:
-1. Fork el proyecto
-2. Agrega los dominios a la categoría correspondiente
-3. Envía un Pull Request
-
-## 📄 Licencia
-
-MIT License - Ver archivo LICENSE para más detalles.
+MIT

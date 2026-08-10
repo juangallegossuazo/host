@@ -1,15 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Host Blocker Sync",
+  "name": "Host Blocker",
   "version": "1.0.0",
-  "description": "Sincroniza y gestiona el bloqueo de sitios web desde el archivo hosts",
+  "description": "Bloquea sitios web desde el repositorio host en GitHub",
   "permissions": [
-    "activeTab",
     "storage",
     "tabs",
-    "webNavigation",
-    "webRequest",
-    "downloads"
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "activeTab"
   ],
   "host_permissions": [
     "<all_urls>"

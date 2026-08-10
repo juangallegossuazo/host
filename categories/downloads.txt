@@ -1,0 +1,106 @@
+# --- DESCARGAS ---
+# Sitios de descarga de software - Bloqueados por Host Blocker
+
+# Softonic
+0.0.0.0 softonic.com
+0.0.0.0 www.softonic.com
+0.0.0.0 es.softonic.com
+0.0.0.0 softonic.es
+0.0.0.0 www.softonic.es
+0.0.0.0 softonic.de
+0.0.0.0 www.softonic.de
+0.0.0.0 softonic.fr
+0.0.0.0 www.softonic.fr
+0.0.0.0 softonic.it
+0.0.0.0 www.softonic.it
+0.0.0.0 softonic.com.br
+0.0.0.0 www.softonic.com.br
+
+# Uptodown
+0.0.0.0 uptodown.com
+0.0.0.0 www.uptodown.com
+0.0.0.0 es.uptodown.com
+0.0.0.0 www.es.uptodown.com
+0.0.0.0 uptodown.de
+0.0.0.0 www.uptodown.de
+0.0.0.0 uptodown.fr
+0.0.0.0 www.uptodown.fr
+0.0.0.0 uptodown.it
+0.0.0.0 www.uptodown.it
+
+# Malavida
+0.0.0.0 malavida.com
+0.0.0.0 www.malavida.com
+0.0.0.0 es.malavida.com
+0.0.0.0 www.es.malavida.com
+0.0.0.0 malavida.de
+0.0.0.0 www.malavida.de
+0.0.0.0 malavida.fr
+0.0.0.0 www.malavida.fr
+
+# FileHippo
+0.0.0.0 filehippo.com
+0.0.0.0 www.filehippo.com
+0.0.0.0 es.filehippo.com
+
+# Softpedia
+0.0.0.0 softpedia.com
+0.0.0.0 www.softpedia.com
+0.0.0.0 softpedia.ro
+0.0.0.0 www.softpedia.ro
+
+# MajorGeeks
+0.0.0.0 majorgeeks.com
+0.0.0.0 www.majorgeeks.com
+
+# FileHorse
+0.0.0.0 filehorse.com
+0.0.0.0 www.filehorse.com
+
+# Chip
+0.0.0.0 chip.de
+0.0.0.0 www.chip.de
+
+# CNET
+0.0.0.0 download.cnet.com
+0.0.0.0 www.download.cnet.com
+
+# Torrents
+0.0.0.0 thepiratebay.org
+0.0.0.0 www.thepiratebay.org
+0.0.0.0 kickasstorrents.com
+0.0.0.0 www.kickasstorrents.com
+0.0.0.0 1337x.to
+0.0.0.0 www.1337x.to
+0.0.0.0 rarbg.to
+0.0.0.0 www.rarbg.to
+0.0.0.0 nyaa.si
+0.0.0.0 www.nyaa.si
+0.0.0.0 rutracker.org
+0.0.0.0 www.rutracker.org
+0.0.0.0 limetorrents.info
+0.0.0.0 www.limetorrents.info
+0.0.0.0 torrentgalaxy.to
+0.0.0.0 www.torrentgalaxy.to
+0.0.0.0 eztv.re
+0.0.0.0 www.eztv.re
+0.0.0.0 yts.mx
+0.0.0.0 www.yts.mx
+0.0.0.0 fitgirl-repacks.site
+0.0.0.0 www.fitgirl-repacks.site
+
+# Conversores / descargadores
+0.0.0.0 y2mate.com
+0.0.0.0 www.y2mate.com
+0.0.0.0 savefrom.net
+0.0.0.0 www.savefrom.net
+0.0.0.0 clipconverter.cc
+0.0.0.0 www.clipconverter.cc
+
+# Software crackeado
+0.0.0.0 getintopc.com
+0.0.0.0 www.getintopc.com
+0.0.0.0 oceanofgames.com
+0.0.0.0 www.oceanofgames.com
+0.0.0.0 crackstation.net
+0.0.0.0 www.crackstation.net

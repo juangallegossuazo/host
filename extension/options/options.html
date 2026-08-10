@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Blocker — Configuración</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <!-- PIN Challenge Modal Overlay -->
+  <div class="pin-modal-overlay" id="pinModalOverlay" style="display: none;">
+    <div class="pin-modal-card">
+      <div class="pin-modal-icon">🔒</div>
+      <h2 class="pin-modal-title">Configuración Protegida</h2>
+      <p class="pin-modal-subtitle">Ingresa tu código PIN de 4 dígitos para acceder a las opciones de configuración.</p>
+      <div class="pin-input-container">
+        <input type="password" id="pinChallengeInput" maxlength="4" placeholder="••••" autocomplete="off">
+      </div>
+      <div class="pin-error-text" id="pinChallengeError" style="display: none;">❌ PIN incorrecto. Inténtalo de nuevo.</div>
+      <button class="btn btn-primary pin-unlock-btn" id="pinChallengeBtn" type="button">Desbloquear Opciones</button>
+    </div>
+  </div>
+
+  <div class="app">
+
+    <!-- Header (Studio-style top bar) -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true" style="background: linear-gradient(135deg, #10b981 0%, #6366f1 100%); padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3L20 7V12C20 17 16 20.5 12 22C8 20.5 4 17 4 12V7L12 3Z" fill="#ffffff" fill-opacity="0.95"/>
+            <path d="M12 7L13.2 10.8L17 12L13.2 13.2L12 17L10.8 13.2L7 12L10.8 10.8L12 7Z" fill="#6366f1"/>
+          </svg>
+        </span>
+        <span class="brand-name">Host<em>Blocker</em></span>
+        <span class="brand-tag">extensión pro</span>
+      </div>
+
+      <div class="menu">
+        <div class="menu-search">
+          <span class="menu-search-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+              <path d="M20.5 20.5l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input type="text" id="navSearch" class="menu-search-input" placeholder="Buscar opción o regla...">
+        </div>
+
+        <!-- Mode Toggle Button (Light / Dark) -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Cambiar Tema (Claro / Oscuro)">
+          <span class="theme-icon sun-icon" aria-hidden="true">☀️</span>
+          <span class="theme-icon moon-icon" aria-hidden="true">🌙</span>
+          <span class="theme-text">Modo Claro</span>
+        </button>
+
+        <div class="menu-item">
+          <span class="menu-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9a6 6 0 1 1 12 0v5l2 2.5H4L6 14V9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M10 19.5a2.2 2.2 0 0 0 4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="menu-label" id="headerStat">0</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-body">
+
+      <!-- Sidebar Menu (Sincronización API, Lista Negra y Actualizaciones) -->
+      <aside class="app-sidebar">
+        <nav class="menu">
+          <div class="menu-header">Sincronización y Servidor</div>
+
+          <button class="nav-item active" data-target="section-apisync" data-title="Sincronización con GitHub" data-subtitle="Sincroniza las listas de bloqueo desde el repositorio">
+            <span class="nav-icon" aria-hidden="true">📦</span>
+            <span class="nav-label">Sincronización GitHub</span>
+          </button>
+
+          <div class="menu-header">Reglas de Bloqueo</div>
+
+          <button class="nav-item" data-target="section-blocklist" data-title="Lista de Bloqueo Personalizada (Lista Negra)" data-subtitle="Sitios web restringidos ingresados por ti y sincronizados">
+            <span class="nav-icon" aria-hidden="true">📋</span>
+            <span class="nav-label">Lista Negra</span>
+          </button>
+
+          <button class="nav-item" data-target="section-updates" data-title="Actualizaciones del Sistema" data-subtitle="Avisos e instrucciones emitidas por el Administrador Global">
+            <span class="nav-icon" aria-hidden="true">📢</span>
+            <span class="nav-label">Actualizaciones</span>
+          </button>
+
+          <div class="menu-header">Seguridad</div>
+
+          <button class="nav-item" data-target="section-security" data-title="Seguridad y Protección PIN" data-subtitle="Protege la configuración con un código PIN de 4 dígitos">
+            <span class="nav-icon" aria-hidden="true">🔒</span>
+            <span class="nav-label">Seguridad PIN</span>
+          </button>
+
+          <button class="nav-item" data-target="section-stats" data-title="Estadísticas de Bloqueo" data-subtitle="Métricas de sitios interceptados">
+            <span class="nav-icon" aria-hidden="true">📊</span>
+            <span class="nav-label">Estadísticas</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <span class="footer-author">Host Blocker</span>
+          <span class="footer-version">v1.0.0 - Sincronizado con GitHub</span>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="app-content">
+        <div class="page-header">
+          <h1 id="pageTitle">Estadísticas y Análisis</h1>
+          <p id="pageSubtitle">Métricas de bloqueo y rendimiento de anuncios</p>
+        </div>
+
+      <div class="content-body">
+
+        <!-- 1. Statistics Section -->
+        <section class="card section active" id="section-stats">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">📊</span>
+            <div>
+              <h2>Resumen de Actividad</h2>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-number" id="todayStat">0</div>
+              <div class="stat-label">Bloqueos de Hoy</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="weekStat">0</div>
+              <div class="stat-label">Bloqueos Esta Semana</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="adsStat">128</div>
+              <div class="stat-label">Anuncios Bloqueados</div>
+            </div>
+          </div>
+
+          <div class="history-block">
+            <div class="history-head">
+              <div>
+                <h3>Historial de Intentos</h3>
+                <p>Intentos de acceso registrados por dominio</p>
+              </div>
+              <div class="history-actions">
+                <span class="history-summary" id="historySummary"></span>
+                <button class="btn-ghost" id="clearHistoryBtn" type="button">Borrar historial</button>
+              </div>
+            </div>
+            <div class="history-table">
+              <div class="history-row history-head-row">
+                <span>Sitio Web</span>
+                <span class="col-count">Intentos</span>
+                <span class="col-date">Último intento</span>
+              </div>
+              <div id="historyList"></div>
+            </div>
+            <div class="empty-message" id="historyEmpty" style="display: none;">No hay registros de bloqueo aún.</div>
+          </div>
+        </section>
+
+        <!-- 2. Block Action & AdBlocker Section -->
+        <section class="card section" id="section-action">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">🛡️</span>
+            <div>
+              <h2>Acción de Bloqueo y AdBlocker</h2>
+              <p class="card-desc">Personaliza el comportamiento ante sitios restringidos y publicidad</p>
+            </div>
+          </div>
+
+          <!-- AdBlocker Toggle -->
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">Bloqueador de Anuncios (AdBlocker)</h3>
+                <p style="margin-bottom: 0; font-size: 13px; color: var(--text-secondary);">Bloquea banners, anuncios emergentes y trackers publicitarios molestos</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="adBlockToggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="blockAction" value="blockPage">
+              <span class="radio-custom"></span>
+              <div class="radio-content">
+                <span class="radio-label">Pantalla Motivacional</span>
+                <span class="radio-desc">Muestra una frase inspiradora y temporizador de cuenta regresiva</span>
+              </div>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="blockAction" value="redirect">
+              <span class="radio-custom"></span>
+              <div class="radio-content">
+                <span class="radio-label">Redirigir a URL</span>
+                <span class="radio-desc">Navega hacia Wikipedia o una página educativa de tu elección</span>
+              </div>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="blockAction" value="quiz">
+              <span class="radio-custom"></span>
+              <div class="radio-content">
+                <span class="radio-label">Cuestionario Matemático (Quiz)</span>
+                <span class="radio-desc">Resuelve un ejercicio matemático para permitir acceso temporal</span>
+              </div>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="blockAction" value="mindfulness">
+              <span class="radio-custom"></span>
+              <div class="radio-content">
+                <span class="radio-label">Pausa de Respiración (Mindfulness)</span>
+                <span class="radio-desc">Realiza un ejercicio guiado de respiración consciente de 15 segundos</span>
+              </div>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="blockAction" value="closeTab">
+              <span class="radio-custom"></span>
+              <div class="radio-content">
+                <span class="radio-label">Cerrar Pestaña</span>
+                <span class="radio-desc">Cierra automáticamente la pestaña de inmediato</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="redirect-url-row" id="redirectUrlRow" style="display: none; margin-top: 14px;">
+            <label for="redirectUrl">Dirección de Redirección (URL):</label>
+            <input type="url" id="redirectUrl" placeholder="https://es.wikipedia.org" class="input-field">
+          </div>
+          <div class="redirect-url-row" id="snoozeSettingContainer" style="display: none; margin-top: 14px;">
+            <label class="inline-checkbox">
+              <input type="checkbox" id="allowSnoozeOnBlockPage">
+              <span class="inline-checkbox-text">Permitir acceso temporal (Snooze) en la pantalla de bloqueo</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- 3. YouTube Shorts Section -->
+        <section class="card section" id="section-youtube">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">📺</span>
+            <div>
+              <h2>Filtro de YouTube Shorts</h2>
+              <p class="card-desc">Elimina distracciones breves en la plataforma de YouTube.</p>
+            </div>
+          </div>
+          <label class="inline-checkbox">
+            <input type="checkbox" id="blockYouTubeShorts">
+            <span class="inline-checkbox-text">Bloquear YouTube Shorts</span>
+          </label>
+          <div class="inline-hint">
+            Oculta los bloques y menús de Shorts en la interfaz de YouTube y redirige fuera de las direcciones <strong>/shorts</strong>.
+          </div>
+        </section>
+
+        <!-- 4. Custom Blocklist Section -->
+        <section class="card section" id="section-blocklist">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">📋</span>
+            <div>
+              <h2>Lista Negra (Sitios Bloqueados)</h2>
+              <p class="card-desc">Añade dominios específicos que desees bloquear</p>
+            </div>
+          </div>
+          <div class="add-domain-row">
+            <input type="text" id="domainInput" placeholder="ejemplo.com" class="input-field">
+            <button class="btn btn-primary" id="addDomainBtn">Añadir Sitio</button>
+          </div>
+          <p class="input-hint">Todos los subdominios se bloquean automáticamente (ej. <strong>ejemplo.com</strong> bloquea www.ejemplo.com)</p>
+          <ul class="domain-list" id="domainList"></ul>
+          <p class="empty-message" id="emptyMessage">Aún no has añadido sitios personalizados.</p>
+        </section>
+
+        <!-- 5. Whitelist Section (Excepciones) -->
+        <section class="card section" id="section-whitelist">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">✅</span>
+            <div>
+              <h2>Lista Blanca (Sitios Permitidos)</h2>
+              <p class="card-desc">Sitios web que jamás serán bloqueados aunque pertenezcan a una categoría restringida</p>
+            </div>
+          </div>
+          <div class="add-domain-row">
+            <input type="text" id="whitelistInput" placeholder="docs.google.com" class="input-field">
+            <button class="btn btn-primary" id="addWhitelistBtn">Añadir Excepción</button>
+          </div>
+          <ul class="domain-list" id="whitelistDomainList" style="margin-top: 14px;"></ul>
+        </section>
+
+        <!-- 6. Preset Categories Section -->
+        <section class="card section" id="section-categories">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">📁</span>
+            <div>
+              <h2>Categorías Predeterminadas</h2>
+              <p class="card-desc">Bloquea grupos completos de sitios con un solo clic</p>
+            </div>
+          </div>
+          <div class="categories-tabs" id="categoriesTabs"></div>
+          <div class="category-table-wrap">
+            <div class="category-table-head">
+              <div class="category-table-heading">
+                <h3 class="category-table-title" id="categoryTableTitle">Selecciona una categoría</h3>
+                <p class="category-table-subtitle" id="categoryTableSubtitle">Elige una categoría superior para administrar sus sitios</p>
+              </div>
+              <div class="category-table-actions">
+                <label class="category-toggle">
+                  <input type="checkbox" id="categoryHeadToggle">
+                  <span class="category-slider"></span>
+                </label>
+                <span class="category-table-summary" id="categoryTableSummary"></span>
+              </div>
+            </div>
+            <div class="category-table">
+              <div class="category-table-row category-table-head-row">
+                <span class="table-col-site">Sitio Web</span>
+                <span class="table-col-status">Estado</span>
+                <span class="table-col-action">Acción</span>
+              </div>
+              <div id="categoryTable"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. Schedule Section -->
+        <section class="card section" id="section-schedule">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">⏰</span>
+            <div>
+              <h2>Horario de Productividad</h2>
+              <p class="card-desc">Elige cuándo estará activo el bloqueo automático</p>
+            </div>
+          </div>
+          <div class="schedule-mode-toggle" id="scheduleModeToggle">
+            <button class="mode-btn active" data-mode="always">Siempre Activo</button>
+            <button class="mode-btn" data-mode="scheduled">Usar Horario</button>
+          </div>
+          <div class="schedule-table" id="scheduleTable" style="display: none;"></div>
+        </section>
+
+        <!-- 8. GitHub Sync Section -->
+        <section class="card section active" id="section-apisync">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">📦</span>
+            <div>
+              <h2>Sincronización con GitHub</h2>
+              <p class="card-desc">Sincroniza automáticamente las listas de bloqueo desde el repositorio</p>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+            <div style="padding: 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 20px;">📦</span>
+                <strong style="font-size: 15px;">Repositorio: juangallegossuazo/host</strong>
+              </div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Las listas de dominios se descargan automáticamente desde GitHub cada 30 minutos.</p>
+            </div>
+            <button class="btn btn-primary" id="syncDjangoApiBtn" type="button" style="padding: 12px; font-size: 15px; font-weight: 700;">⚡ Sincronizar Ahora</button>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 14px;">
+            <div>
+              <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">🛡️ Protección contra Desinstalación</h3>
+              <p style="margin-bottom: 0; font-size: 13px; color: var(--text-secondary);">Redirige al repositorio de GitHub si el usuario intenta quitar la extensión</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="uninstallProtectionToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="inline-hint" id="apiSyncStatusHint">
+            🟢 Conectado al repositorio de GitHub. Las listas se actualizan automáticamente.
+          </div>
+        </section>
+
+        <!-- Section: Actualizaciones del Sistema -->
+        <section class="card section" id="section-updates">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">📢</span>
+            <div>
+              <h2>Actualizaciones del Sistema y Avisos</h2>
+              <p class="card-desc">Anuncios, notificaciones y directivas emitidas por el Administrador Global</p>
+            </div>
+          </div>
+          <div id="updatesListContainer">
+            <div style="padding: 16px; background: var(--surface-2); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <strong style="font-size: 15px; color: var(--heading);">📢 Sincronización GitHub v1.0.0 Activa</strong>
+                <span class="badge-approved" style="background: rgba(16, 185, 129, 0.2); color: #34d399; padding: 3px 8px; border-radius: 99px; font-size: 11px; font-weight: 700;">ACTUALIZADO</span>
+              </div>
+              <p style="font-size: 13.5px; color: var(--text-secondary); margin: 0;">Tu extensión está sincronizada con el repositorio de GitHub. Las listas de dominios se actualizan automáticamente cada 30 minutos.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. Security Section (PIN) -->
+        <section class="card section" id="section-security">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">🔒</span>
+            <div>
+              <h2>Seguridad y Protección por PIN</h2>
+              <p class="card-desc">Protege tus ajustes con un PIN de 4 dígitos para evitar cambios no autorizados</p>
+            </div>
+          </div>
+          <div class="card-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div>
+                <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">Activar Protección por PIN</h3>
+                <p style="margin-bottom: 0; font-size: 13px; color: var(--text-secondary);">Solicita un PIN de 4 dígitos antes de modificar opciones o desactivar bloqueos</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="pinToggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div id="pinInputRow" style="display: none;" class="input-row">
+              <input type="password" id="pinCodeInput" maxlength="4" placeholder="1234" class="input-field" style="max-width: 160px; text-align: center; letter-spacing: 4px; font-size: 18px;">
+              <button class="btn btn-primary" id="savePinBtn" type="button">Guardar PIN</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. Backup Section -->
+        <section class="card section" id="section-backup">
+          <div class="card-head">
+            <span class="head-icon" aria-hidden="true">💾</span>
+            <div>
+              <h2>Copia de Seguridad</h2>
+              <p class="card-desc">Exporta e importa tu configuración</p>
+            </div>
+          </div>
+          <div class="backup-actions">
+            <button class="btn btn-primary" id="exportBackupBtn" type="button">
+              📤 Exportar Configuración
+            </button>
+            <label class="btn btn-ghost file-input-label">
+              📥 Importar Configuración
+              <input type="file" id="importBackupInput" accept=".json" style="display: none;">
+            </label>
+          </div>
+          <div class="inline-hint" id="backupStatusHint">
+            💡 Exporta tu configuración para guardar una copia de seguridad.
+          </div>
+        </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="menu.js"></script>
+  <script src="options.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,685 @@
+import { CATEGORY_META, CATEGORY_ICONS, DAY_NAMES } from '../common/constants.js';
+import { getSettings, saveSettings, syncWithDjangoApi, getStats, getTodayCount, getWeekCount, getDomainStats, clearDomainStats } from '../common/storage.js';
+import { PRESETS } from '../data/presets.js';
+
+let settings = {};
+let debounceTimer = null;
+let selectedCategory = null;
+let headToggleBound = false;
+
+async function init() {
+  settings = await getSettings();
+  const stats = await getStats();
+
+  checkPinProtection();
+  renderStats(stats);
+  await renderHistory();
+  bindClearHistory();
+  renderBlockAction();
+  renderYouTubeSettings();
+  renderCustomBlocklist();
+  renderWhitelist();
+  renderCategories();
+  renderScheduleMode();
+  renderSchedule();
+  renderSecuritySettings();
+  initBackupHandlers();
+}
+
+function checkPinProtection() {
+  const isPinActive = !!(settings.pinEnabled && settings.pinCode && settings.pinCode.trim());
+  const isUnlocked = sessionStorage.getItem('pin_unlocked') === 'true';
+
+  const overlay = document.getElementById('pinModalOverlay');
+  if (!overlay) return;
+
+  if (isPinActive && !isUnlocked) {
+    overlay.style.display = 'flex';
+    const input = document.getElementById('pinChallengeInput');
+    const btn = document.getElementById('pinChallengeBtn');
+    const error = document.getElementById('pinChallengeError');
+
+    if (input) {
+      input.value = '';
+      setTimeout(() => input.focus(), 100);
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter') verifyPin();
+      };
+    }
+
+    if (btn) {
+      btn.onclick = verifyPin;
+    }
+
+    function verifyPin() {
+      const typedPin = (input ? input.value : '').trim();
+      if (typedPin === settings.pinCode.trim()) {
+        sessionStorage.setItem('pin_unlocked', 'true');
+        overlay.style.display = 'none';
+        if (error) error.style.display = 'none';
+      } else {
+        if (error) error.style.display = 'block';
+        if (input) {
+          input.value = '';
+          input.style.borderColor = '#ef4444';
+          setTimeout(() => { input.style.borderColor = ''; }, 1200);
+        }
+      }
+    }
+  } else {
+    overlay.style.display = 'none';
+  }
+}
+
+// --- Statistics ---
+
+function renderStats(stats) {
+  const today = getTodayCount(stats);
+  document.getElementById('todayStat').textContent = today;
+  document.getElementById('weekStat').textContent = getWeekCount(stats);
+  const headerStat = document.getElementById('headerStat');
+  if (headerStat) headerStat.textContent = today;
+
+  const adsStat = document.getElementById('adsStat');
+  if (adsStat) adsStat.textContent = settings.totalAdsBlocked || 128;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  try {
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+async function renderHistory() {
+  const domainStats = await getDomainStats();
+  const listEl = document.getElementById('historyList');
+  const emptyEl = document.getElementById('historyEmpty');
+  const summaryEl = document.getElementById('historySummary');
+
+  const entries = Object.entries(domainStats)
+    .map(([domain, entry]) => ({ domain, count: entry.count || 0, lastBlocked: entry.lastBlocked }))
+    .sort((a, b) => b.count - a.count || (a.lastBlocked < b.lastBlocked ? 1 : -1));
+
+  if (!listEl) return;
+
+  if (entries.length === 0) {
+    listEl.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = '';
+    if (summaryEl) summaryEl.textContent = '';
+    return;
+  }
+
+  if (emptyEl) emptyEl.style.display = 'none';
+  const total = entries.reduce((sum, e) => sum + e.count, 0);
+  if (summaryEl) summaryEl.textContent = `${entries.length} sitio(s) · ${total} intento(s)`;
+
+  listEl.innerHTML = entries.map(({ domain, count, lastBlocked }) => `
+    <div class="history-row">
+      <span class="history-domain" title="${domain}">${domain}</span>
+      <span class="col-count"><span class="badge-count">${count}</span></span>
+      <span class="col-date history-date">${formatDate(lastBlocked)}</span>
+    </div>
+  `).join('');
+}
+
+function bindClearHistory() {
+  const btn = document.getElementById('clearHistoryBtn');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    await clearDomainStats();
+    await renderHistory();
+  });
+}
+
+// --- Block Action & AdBlocker ---
+
+function renderBlockAction() {
+  const radios = document.querySelectorAll('input[name="blockAction"]');
+  const redirectRow = document.getElementById('redirectUrlRow');
+  const redirectInput = document.getElementById('redirectUrl');
+  const snoozeRow = document.getElementById('snoozeSettingContainer');
+  const snoozeCheckbox = document.getElementById('allowSnoozeOnBlockPage');
+  const adBlockToggle = document.getElementById('adBlockToggle');
+
+  radios.forEach(radio => {
+    radio.checked = radio.value === settings.blockAction;
+    radio.addEventListener('change', async () => {
+      settings.blockAction = radio.value;
+      await saveSettings({ blockAction: radio.value });
+      if (redirectRow) redirectRow.style.display = radio.value === 'redirect' ? 'flex' : 'none';
+      const showSnooze = radio.value === 'blockPage' || radio.value === 'quiz' || radio.value === 'mindfulness';
+      if (snoozeRow) snoozeRow.style.display = showSnooze ? 'flex' : 'none';
+    });
+  });
+
+  if (redirectRow) redirectRow.style.display = settings.blockAction === 'redirect' ? 'flex' : 'none';
+  if (redirectInput) redirectInput.value = settings.redirectUrl || 'https://es.wikipedia.org';
+
+  if (snoozeCheckbox) {
+    snoozeCheckbox.checked = !!settings.allowSnoozeOnBlockPage;
+    snoozeCheckbox.addEventListener('change', async () => {
+      settings.allowSnoozeOnBlockPage = snoozeCheckbox.checked;
+      await saveSettings({ allowSnoozeOnBlockPage: snoozeCheckbox.checked });
+    });
+  }
+
+  if (adBlockToggle) {
+    adBlockToggle.checked = settings.adBlockEnabled !== undefined ? !!settings.adBlockEnabled : true;
+    adBlockToggle.addEventListener('change', async () => {
+      settings.adBlockEnabled = adBlockToggle.checked;
+      await saveSettings({ adBlockEnabled: adBlockToggle.checked });
+    });
+  }
+
+  if (redirectInput) {
+    redirectInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(async () => {
+        const url = redirectInput.value.trim();
+        if (url) {
+          settings.redirectUrl = url;
+          await saveSettings({ redirectUrl: url });
+        }
+      }, 500);
+    });
+  }
+}
+
+// --- YouTube ---
+
+function renderYouTubeSettings() {
+  const checkbox = document.getElementById('blockYouTubeShorts');
+  if (!checkbox) return;
+
+  checkbox.checked = settings.blockYouTubeShorts !== undefined ? !!settings.blockYouTubeShorts : true;
+  checkbox.addEventListener('change', async () => {
+    settings.blockYouTubeShorts = checkbox.checked;
+    await saveSettings({ blockYouTubeShorts: checkbox.checked });
+  });
+}
+
+// --- Custom Blocklist ---
+
+function renderCustomBlocklist() {
+  const list = document.getElementById('domainList');
+  const emptyMsg = document.getElementById('emptyMessage');
+  const input = document.getElementById('domainInput');
+  const addBtn = document.getElementById('addDomainBtn');
+
+  function renderList() {
+    list.replaceChildren();
+    emptyMsg.style.display = settings.customBlocklist.length === 0 ? 'block' : 'none';
+
+    for (const domain of settings.customBlocklist) {
+      const li = document.createElement('li');
+      li.className = 'domain-item';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'domain-name';
+      nameSpan.textContent = domain;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'domain-remove';
+      removeBtn.title = 'Eliminar';
+      removeBtn.textContent = '\u00D7';
+      removeBtn.addEventListener('click', async () => {
+        settings.customBlocklist = settings.customBlocklist.filter(d => d !== domain);
+        await saveSettings({ customBlocklist: settings.customBlocklist });
+        syncWithDjangoApi().catch(() => {});
+        renderList();
+      });
+
+      li.append(nameSpan, removeBtn);
+      list.appendChild(li);
+    }
+  }
+
+  addBtn.addEventListener('click', addDomain);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addDomain();
+  });
+
+  async function addDomain() {
+    let domain = input.value.trim().toLowerCase();
+    if (!domain) return;
+
+    domain = domain
+      .replace(/^https?:\/\//, '')
+      .replace(/\/.*$/, '')
+      .replace(/^www\./, '')
+      .replace(/^\*\./, '');
+
+    if (!domain || domain.includes(' ') || !domain.includes('.')) {
+      input.style.borderColor = '#EF4444';
+      setTimeout(() => { input.style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    if (settings.customBlocklist.includes(domain)) {
+      input.style.borderColor = '#f59e0b';
+      setTimeout(() => { input.style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    settings.customBlocklist.push(domain);
+    await saveSettings({ customBlocklist: settings.customBlocklist });
+    syncWithDjangoApi().catch(() => {});
+    input.value = '';
+    renderList();
+  }
+
+  renderList();
+}
+
+// --- Whitelist ---
+
+function renderWhitelist() {
+  const list = document.getElementById('whitelistDomainList');
+  const input = document.getElementById('whitelistInput');
+  const addBtn = document.getElementById('addWhitelistBtn');
+  if (!list || !input || !addBtn) return;
+
+  const whiteList = settings.whiteList || ['docs.google.com', 'github.com', 'wikipedia.org'];
+
+  function renderList() {
+    list.replaceChildren();
+    for (const domain of whiteList) {
+      const li = document.createElement('li');
+      li.className = 'domain-item';
+      li.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'domain-name';
+      nameSpan.textContent = domain;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'domain-remove';
+      removeBtn.textContent = '\u00D7';
+      removeBtn.addEventListener('click', async () => {
+        settings.whiteList = (settings.whiteList || []).filter(d => d !== domain);
+        await saveSettings({ whiteList: settings.whiteList });
+        renderList();
+      });
+
+      li.append(nameSpan, removeBtn);
+      list.appendChild(li);
+    }
+  }
+
+  addBtn.addEventListener('click', async () => {
+    let dom = input.value.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    if (dom && !whiteList.includes(dom)) {
+      whiteList.push(dom);
+      settings.whiteList = whiteList;
+      await saveSettings({ whiteList });
+      input.value = '';
+      renderList();
+    }
+  });
+
+  renderList();
+}
+
+// --- Security (PIN) & Anti-Uninstall ---
+
+// --- Categories ---
+
+function renderCategories() {
+  if (!headToggleBound) {
+    headToggleBound = true;
+    document.getElementById('categoryHeadToggle').addEventListener('change', async () => {
+      if (!selectedCategory) return;
+      const headToggle = document.getElementById('categoryHeadToggle');
+      settings.categoryToggles[selectedCategory] = headToggle.checked;
+      await saveSettings({ categoryToggles: settings.categoryToggles });
+      updateTabState(selectedCategory);
+      renderCategoryTable(selectedCategory);
+    });
+  }
+
+  const tabs = document.getElementById('categoriesTabs');
+  tabs.replaceChildren();
+
+  for (const [catId, meta] of Object.entries(CATEGORY_META)) {
+    const domains = PRESETS[catId] || [];
+
+    const tab = document.createElement('button');
+    tab.className = 'category-tab';
+    tab.dataset.catId = catId;
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'category-tab-icon';
+    iconSpan.innerHTML = CATEGORY_ICONS[catId] || '';
+
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'category-tab-label';
+    labelSpan.textContent = meta.label;
+
+    const countSpan = document.createElement('span');
+    countSpan.className = 'category-tab-count';
+    countSpan.textContent = domains.length;
+
+    tab.append(iconSpan, labelSpan, countSpan);
+
+    tab.addEventListener('click', () => {
+      selectedCategory = catId;
+      updateTabState(catId);
+      renderCategoryTable(catId);
+    });
+
+    tabs.appendChild(tab);
+  }
+
+  if (!selectedCategory || !CATEGORY_META[selectedCategory]) {
+    selectedCategory = Object.keys(CATEGORY_META)[0];
+  }
+  updateTabState(selectedCategory);
+  renderCategoryTable(selectedCategory);
+}
+
+function updateTabState(catId) {
+  document.querySelectorAll('#categoriesTabs .category-tab').forEach(tab => {
+    tab.classList.toggle('active', !!settings.categoryToggles[tab.dataset.catId]);
+    tab.classList.toggle('selected', tab.dataset.catId === catId);
+  });
+}
+
+function renderCategoryTable(catId) {
+  const meta = CATEGORY_META[catId];
+  const domains = PRESETS[catId] || [];
+  const isActive = settings.categoryToggles[catId] || false;
+  const unblocked = settings.categoryUnblocked[catId] || [];
+
+  document.getElementById('categoryTableTitle').textContent = meta.label;
+  document.getElementById('categoryHeadToggle').checked = isActive;
+
+  const blockedCount = domains.filter(d => !unblocked.includes(d)).length;
+  document.getElementById('categoryTableSubtitle').textContent = isActive
+    ? 'Bloqueando ' + blockedCount + ' de ' + domains.length + ' sitios'
+    : 'La categoría está desactivada';
+  document.getElementById('categoryTableSummary').textContent =
+    domains.length + ' sitios' + (unblocked.length ? ' \u00B7 ' + unblocked.length + ' permitidos' : '');
+
+  const table = document.getElementById('categoryTable');
+  table.replaceChildren();
+
+  for (const domain of domains) {
+    const isUnblocked = unblocked.includes(domain);
+    const row = document.createElement('div');
+    row.className = 'category-table-row' + (isUnblocked ? ' unblocked' : '');
+
+    const siteCol = document.createElement('span');
+    siteCol.className = 'table-col-site';
+
+    const favicon = document.createElement('img');
+    favicon.className = 'site-favicon';
+    favicon.src = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=32';
+    favicon.loading = 'lazy';
+    favicon.onerror = () => { favicon.style.display = 'none'; };
+
+    const siteName = document.createElement('span');
+    siteName.className = 'site-name';
+    siteName.textContent = domain;
+
+    siteCol.append(favicon, siteName);
+
+    const statusCol = document.createElement('span');
+    statusCol.className = 'table-col-status';
+
+    const stateSpan = document.createElement('span');
+    stateSpan.className = 'site-state';
+    if (isUnblocked) {
+      stateSpan.textContent = 'Permitido';
+    } else if (isActive) {
+      stateSpan.textContent = 'Bloqueado';
+    } else {
+      stateSpan.textContent = 'Inactivo';
+      stateSpan.classList.add('inactive');
+    }
+    statusCol.appendChild(stateSpan);
+
+    const actionCol = document.createElement('span');
+    actionCol.className = 'table-col-action';
+
+    const siteBtn = document.createElement('button');
+    siteBtn.className = 'site-unblock' + (isUnblocked ? ' undo' : '');
+    siteBtn.textContent = isUnblocked ? 'Bloquear' : 'Permitir';
+    siteBtn.addEventListener('click', () => toggleCategoryDomain(catId, domain));
+
+    actionCol.appendChild(siteBtn);
+
+    row.append(siteCol, statusCol, actionCol);
+    table.appendChild(row);
+  }
+}
+
+async function toggleCategoryDomain(catId, domain) {
+  const unblocked = settings.categoryUnblocked[catId] || [];
+  const idx = unblocked.indexOf(domain);
+  if (idx >= 0) unblocked.splice(idx, 1);
+  else unblocked.push(domain);
+  settings.categoryUnblocked[catId] = unblocked;
+  await saveSettings({ categoryUnblocked: settings.categoryUnblocked });
+  renderCategoryTable(catId);
+}
+
+// --- Schedule ---
+
+function renderScheduleMode() {
+  const toggle = document.getElementById('scheduleModeToggle');
+  const table = document.getElementById('scheduleTable');
+  const buttons = toggle.querySelectorAll('.mode-btn');
+
+  buttons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === settings.scheduleMode);
+  });
+  table.style.display = settings.scheduleMode === 'scheduled' ? '' : 'none';
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      settings.scheduleMode = btn.dataset.mode;
+      table.style.display = btn.dataset.mode === 'scheduled' ? '' : 'none';
+      await saveSettings({ scheduleMode: btn.dataset.mode });
+    });
+  });
+}
+
+function renderSchedule() {
+  const table = document.getElementById('scheduleTable');
+  table.replaceChildren();
+
+  const dayOrder = [1, 2, 3, 4, 5, 6, 0];
+
+  for (const dayIndex of dayOrder) {
+    const dayConfig = settings.schedule[dayIndex.toString()];
+    const row = document.createElement('div');
+    row.className = 'schedule-row' + (dayConfig.enabled ? ' active' : '');
+
+    const daySpan = document.createElement('span');
+    daySpan.className = 'schedule-day';
+    daySpan.textContent = DAY_NAMES[dayIndex];
+
+    const toggleLabel = document.createElement('label');
+    toggleLabel.className = 'schedule-toggle';
+
+    const toggle = document.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.checked = dayConfig.enabled;
+
+    const sliderSpan = document.createElement('span');
+    sliderSpan.className = 'schedule-slider';
+
+    toggleLabel.append(toggle, sliderSpan);
+
+    const timesDiv = document.createElement('div');
+    timesDiv.className = 'schedule-times';
+
+    const startInput = document.createElement('input');
+    startInput.type = 'time';
+    startInput.className = 'time-input start-time';
+    startInput.value = dayConfig.startTime;
+    startInput.disabled = !dayConfig.enabled;
+
+    const dashSpan = document.createElement('span');
+    dashSpan.textContent = '\u2014';
+
+    const endInput = document.createElement('input');
+    endInput.type = 'time';
+    endInput.className = 'time-input end-time';
+    endInput.value = dayConfig.endTime;
+    endInput.disabled = !dayConfig.enabled;
+
+    timesDiv.append(startInput, dashSpan, endInput);
+    row.append(daySpan, toggleLabel, timesDiv);
+
+    toggle.addEventListener('change', async () => {
+      settings.schedule[dayIndex.toString()].enabled = toggle.checked;
+      startInput.disabled = !toggle.checked;
+      endInput.disabled = !toggle.checked;
+      row.classList.toggle('active', toggle.checked);
+      await saveSettings({ schedule: settings.schedule });
+    });
+
+    const saveTime = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(async () => {
+        settings.schedule[dayIndex.toString()].startTime = startInput.value;
+        settings.schedule[dayIndex.toString()].endTime = endInput.value;
+        await saveSettings({ schedule: settings.schedule });
+      }, 500);
+    };
+
+    startInput.addEventListener('change', saveTime);
+    endInput.addEventListener('change', saveTime);
+
+    table.appendChild(row);
+  }
+}
+
+// --- Backup & Restore ---
+
+function initBackupHandlers() {
+  const exportBtn = document.getElementById('exportBackupBtn');
+  const importInput = document.getElementById('importBackupInput');
+  const hintEl = document.getElementById('backupStatusHint');
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('🔒 La función de exportar copia de seguridad está deshabilitada para usuarios. Toda la información se respalda centralmente en el Servidor API del Administrador.');
+      if (hintEl) hintEl.textContent = '🔒 Acción denegada: Copia de seguridad deshabilitada para usuarios.';
+    });
+  }
+
+  if (importInput) {
+    importInput.addEventListener('change', (e) => {
+      e.preventDefault();
+      alert('🔒 La función de importar copia de seguridad está deshabilitada para usuarios.');
+      if (hintEl) hintEl.textContent = '🔒 Acción denegada: Importación restringida.';
+    });
+  }
+
+  const syncBtn = document.getElementById('syncDjangoApiBtn');
+  const apiInput = document.getElementById('djangoApiUrlInput');
+  const apiKeyInput = document.getElementById('djangoApiKeyInput');
+  const apiHint = document.getElementById('apiSyncStatusHint');
+
+  if (apiKeyInput && settings.apiKey) {
+    apiKeyInput.value = settings.apiKey;
+  }
+
+  if (syncBtn && apiInput) {
+    syncBtn.addEventListener('click', async () => {
+      const url = apiInput.value.trim();
+      const apiKeyVal = apiKeyInput ? apiKeyInput.value.trim() : '';
+      if (!url) return;
+      syncBtn.disabled = true;
+      syncBtn.textContent = '⚡ Sincronizando...';
+      if (apiHint) apiHint.textContent = 'Conectando al servidor Django...';
+
+      await saveSettings({ apiUrl: url, apiKey: apiKeyVal });
+      const res = await syncWithDjangoApi(url);
+      syncBtn.disabled = false;
+      syncBtn.textContent = '⚡ Sincronizar con el Servidor';
+
+      if (res && res.ok) {
+        if (apiHint) apiHint.textContent = '🟢 ¡Sincronización exitosa con el Servidor API!';
+        await init();
+      } else {
+        if (apiHint) apiHint.textContent = `❌ Error al conectar: ${res?.error || 'Asegúrate que el servidor esté activo'}`;
+      }
+    });
+  }
+}
+
+function renderSecuritySettings() {
+  const pinToggle = document.getElementById('pinToggle');
+  const pinRow = document.getElementById('pinInputRow');
+  const pinInput = document.getElementById('pinCodeInput');
+  const savePinBtn = document.getElementById('savePinBtn');
+  const uninstallToggle = document.getElementById('uninstallProtectionToggle');
+  const djangoApiUrlInput = document.getElementById('djangoApiUrlInput');
+  const djangoApiKeyInput = document.getElementById('djangoApiKeyInput');
+
+  if (djangoApiUrlInput) {
+    djangoApiUrlInput.value = settings.apiUrl || 'http://127.0.0.1:8000/api/v1/sync/';
+    djangoApiUrlInput.addEventListener('change', async () => {
+      await saveSettings({ apiUrl: djangoApiUrlInput.value.trim() });
+    });
+  }
+
+  if (djangoApiKeyInput) {
+    djangoApiKeyInput.value = settings.apiKey || '';
+    djangoApiKeyInput.addEventListener('change', async () => {
+      await saveSettings({ apiKey: djangoApiKeyInput.value.trim() });
+    });
+  }
+
+  if (pinToggle && pinRow) {
+    pinToggle.checked = !!settings.pinEnabled;
+    pinRow.style.display = settings.pinEnabled ? 'flex' : 'none';
+
+    pinToggle.addEventListener('change', async () => {
+      settings.pinEnabled = pinToggle.checked;
+      pinRow.style.display = pinToggle.checked ? 'flex' : 'none';
+      await saveSettings({ pinEnabled: pinToggle.checked });
+    });
+  }
+
+  if (pinInput && settings.pinCode) {
+    pinInput.value = settings.pinCode;
+  }
+
+  if (savePinBtn && pinInput) {
+    savePinBtn.addEventListener('click', async () => {
+      const code = pinInput.value.trim();
+      if (code) {
+        settings.pinCode = code;
+        sessionStorage.setItem('pin_unlocked', 'true');
+        await saveSettings({ pinCode: code });
+        savePinBtn.textContent = '¡PIN Guardado!';
+        setTimeout(() => { savePinBtn.textContent = 'Guardar PIN'; }, 1500);
+      }
+    });
+  }
+
+  if (uninstallToggle) {
+    uninstallToggle.checked = !!settings.uninstallProtection;
+    uninstallToggle.addEventListener('change', async () => {
+      settings.uninstallProtection = uninstallToggle.checked;
+      await saveSettings({ uninstallProtection: uninstallToggle.checked });
+      chrome.runtime.sendMessage({ type: 'UPDATE_UNINSTALL_PROTECTION' }).catch(() => {});
+    });
+  }
+}
+
+init();

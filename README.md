@@ -9,61 +9,58 @@ Extensión de navegador que bloquea sitios web no deseados. La lista se sincroni
 3. Tú eliges qué categorías o dominios bloquear
 4. La extensión bloquea el acceso directamente en el navegador
 
-**No modifica el archivo hosts del sistema.** Todo el bloqueo lo hace la extensión.
+**No modifica el archivo hosts del sistema.**
 
 ## Categorías
 
-| Categoría | Icono | Descripción |
-|-----------|-------|-------------|
+| Categoría | Icono | Contenido |
+|-----------|-------|-----------|
 | Contenido Adulto | 🔞 | Pornografía, cams, dating adulto |
 | Juegos Online | 🎮 | Plataformas de juegos web |
 | Descargas | 📥 | Softonic, torrents, descargas |
-| Entretenimiento | 📺 | Redes sociales, streaming, compras |
+| Entretenimiento | 📺 | Redes sociales, streaming |
 
-## Instalación de la extensión
+## Instalación
 
 ### Chrome / Edge
 1. Abre `chrome://extensions/`
 2. Activa **Modo desarrollador**
-3. Haz clic en **Cargar extensión sin empaquetar**
-4. Selecciona la carpeta `extension/`
+3. **Cargar extensión sin empaquetar** → selecciona `extension/`
 
 ### Firefox
 1. Abre `about:debugging#/runtime/this-firefox`
-2. Haz clic en **Cargar componente temporal**
-3. Selecciona `extension/manifest.json`
+2. **Cargar componente temporal** → `extension/manifest.json`
 
-## Uso
+## Panel de administrador
 
-- Haz clic en el ícono de la extensión para abrir el panel
-- **Sincronizar**: Descarga la última lista desde GitHub
-- **Bloquear Todo**: Activa todas las categorías
-- **Desbloquear Todo**: Desactiva todas las categorías
-- Activa/desactiva categorías con los toggles
-- Expande cada categoría para elegir dominios individuales
+La extensión incluye un panel con:
+- **Dashboard** con estadísticas y control rápido
+- **Categorías** para activar/desactivar por categoría
+- **Dominios** con búsqueda y selección individual
+- **Registro** de sitios bloqueados
+- **Configuración** de sincronización automática
+
+## Actualizar la lista
+
+Edita los archivos en `categories/` y haz push. La extensión sincroniza cada 30 minutos o manualmente con el botón ⚡ Sincronizar.
 
 ## Estructura
 
 ```
 host/
 ├── README.md
-├── hosts                    # Lista completa (para referencia)
-├── categories/              # Listas por categoría (la extensión las descarga)
+├── categories/
 │   ├── adult.txt
 │   ├── games.txt
 │   ├── downloads.txt
 │   └── entertainment.txt
-└── extension/               # La extensión del navegador
+└── extension/
     ├── manifest.json
-    ├── background.js        # Sincronización y bloqueo
-    ├── popup.html/js        # Interfaz de usuario
-    ├── content.js           # Overlay de bloqueo
+    ├── background.js
+    ├── popup.html / popup.js
+    ├── content.js
     └── icons/
 ```
-
-## Actualizar la lista
-
-Edita los archivos en `categories/` y haz push a GitHub. La extensión sincroniza automáticamente cada 30 minutos, o puedes pulsar "Sincronizar" en el panel.
 
 ## Licencia
 

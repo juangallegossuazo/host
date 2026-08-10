@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Espacio de Enfoque y Tranquilidad — BlockSite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+  <div class="app-mica" aria-hidden="true"></div>
+
+  <div class="container">
+    <!-- Friendly Floating Zen Badge -->
+    <div class="zen-badge-container">
+      <div class="zen-icon" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="url(#zenGrad)" fill-opacity="0.25" stroke="url(#zenGrad)" stroke-width="1.8"/>
+          <path d="M12 7V12L15 15" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="3" stroke="#a7f3d0" stroke-width="1.5"/>
+          <defs>
+            <linearGradient id="zenGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#34d399"/>
+              <stop offset="0.5" stop-color="#818cf8"/>
+              <stop offset="1" stop-color="#c084fc"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <span class="zen-tag">🌱 Modo Enfoque Activo</span>
+    </div>
+
+    <!-- Friendly Encouraging Titles -->
+    <h1 class="main-title">✨ Protegiendo tu Enfoque y Tiempo</h1>
+    <p class="subtitle">Estás a un paso de completar tus metas de hoy. Has pausado temporalmente este sitio para mantener tu mente clara.</p>
+
+    <!-- Domain Pill Card -->
+    <div class="domain-card">
+      <span class="domain-icon" aria-hidden="true">🌿</span>
+      <span class="domain-text" id="blockedDomain">ejemplo.com</span>
+      <span class="domain-badge">Pausado</span>
+    </div>
+
+    <!-- Warm Motivational Quote -->
+    <div class="motivation-box">
+      <span class="quote-mark">“</span>
+      <p class="motivation-text" id="motivation">La disciplina es elegir entre lo que quieres ahora y lo que más deseas para tu futuro.</p>
+    </div>
+
+    <!-- Timer / Always On status -->
+    <div class="timer-section" id="timerSection" style="display: none;">
+      <p class="timer-label">⏰ Este descanso programado finaliza en:</p>
+      <div class="timer" id="countdown">--:--:--</div>
+    </div>
+
+    <div class="always-on" id="alwaysOn" style="display: none;">
+      <span class="always-icon">🛡️</span>
+      <p>Protección continua activa para asegurar tu productividad sin distracciones.</p>
+    </div>
+
+    <!-- Unblock Hint -->
+    <div class="unblock-hint" id="unblockHint" style="display: none;">
+      <p id="unblockHintText"></p>
+      <button class="unblock-settings-btn" id="openSettingsBtn" type="button">⚙️ Abrir Configuración</button>
+    </div>
+
+    <!-- Friendly Snooze Section -->
+    <div class="snooze" id="snoozeSection" style="display: none;">
+      <div class="snooze-head">
+        <span class="snooze-icon">☕</span>
+        <div>
+          <div class="snooze-title">¿Necesitas un descanso breve consciente?</div>
+          <p class="snooze-subtext">Selecciona una pausa corta. Al finalizar el tiempo, la protección se reactivará automáticamente.</p>
+        </div>
+      </div>
+      <div class="snooze-buttons" role="group" aria-label="Duración de acceso temporal">
+        <button class="snooze-btn" data-minutes="1" type="button">☕ 1 min</button>
+        <button class="snooze-btn" data-minutes="5" type="button">☕ 5 min</button>
+        <button class="snooze-btn" data-minutes="10" type="button">☕ 10 min</button>
+        <button class="snooze-btn" data-minutes="15" type="button">☕ 15 min</button>
+      </div>
+      <div class="snooze-hint" id="snoozeHint">
+        Disfruta una breve pausa consciente. Tu lista de bloqueo permanecerá intacta.
+      </div>
+      <div class="snooze-status" id="snoozeStatus" aria-live="polite"></div>
+    </div>
+
+    <!-- Friendly Action Buttons Footer -->
+    <div class="footer">
+      <button class="close-tab-btn" id="closeTabBtn" type="button">
+        ✨ Volver a Mi Tarea — Mantén tu Enfoque en lo Importante
+      </button>
+      <div class="footer-brand">
+        <span>BlockSite Pro</span> — Control Amigable & Concentración Consciente
+      </div>
+    </div>
+  </div>
+
+  <script src="blocked.js" type="module"></script>
+</body>
+</html>

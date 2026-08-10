@@ -1,45 +1,45 @@
 {
-  "manifest_version": 3,
-  "name": "Host Blocker",
-  "version": "1.0.0",
-  "description": "Bloquea sitios web desde el repositorio host en GitHub",
-  "permissions": [
-    "storage",
-    "tabs",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
-    "activeTab"
-  ],
+  "action": {
+    "default_icon": {
+      "128": "icons/icon128_active.png",
+      "16": "icons/icon16_active.png",
+      "32": "icons/icon32_active.png",
+      "48": "icons/icon48_active.png"
+    },
+    "default_popup": "popup/popup.html"
+  },
+  "author": "juangallegossuazo",
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [ {
+    "js": [ "content/youtube-shorts.js" ],
+    "matches": [ "*://*.youtube.com/*" ],
+    "run_at": "document_start"
+  } ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'"
+  },
+  "default_locale": "es",
+  "description": "Bloquea sitios web no deseados. Sincroniza con GitHub.",
   "host_permissions": [
+    "https://raw.githubusercontent.com/*",
+    "https://github.com/*",
     "<all_urls>"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
-  },
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "128": "icons/icon128_active.png",
+    "16": "icons/icon16_active.png",
+    "48": "icons/icon48_active.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_start"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": ["blocked.html"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  "manifest_version": 3,
+  "name": "Host Blocker",
+  "options_page": "options/options.html",
+  "permissions": [ "storage", "declarativeNetRequest", "declarativeNetRequestFeedback", "alarms", "tabs", "activeTab", "webNavigation" ],
+  "version": "1.0.0",
+  "web_accessible_resources": [ {
+    "matches": [ "\u003Call_urls>" ],
+    "resources": [ "blocked/blocked.html" ]
+  } ]
 }

@@ -1,0 +1,169 @@
+import { getSettings, saveSettings, syncWithDjangoApi, extractHostname } from '../common/storage.js';
+
+let currentHostname = null;
+
+const SVG_BLOCK = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  <circle cx="12" cy="12" r="9" stroke="white" stroke-width="2.2"/>
+  <line x1="6.5" y1="6.5" x2="17.5" y2="17.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+</svg>`;
+
+const SVG_CHECK = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  <path d="M5 12l5 5L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+async function init() {
+  let settings = await getSettings();
+
+  // ── Status Badges Helper ──────────────────
+  const enableStatusBadge = document.getElementById('enableStatusBadge');
+  const shortsStatusBadge = document.getElementById('shortsStatusBadge');
+  const statusBadge = document.getElementById('apiStatusBadge');
+  const uninstallBadge = document.getElementById('uninstallProtectionBadge');
+
+  function updateStatusPills(s) {
+    if (enableStatusBadge) {
+      if (s.enabled !== false) {
+        enableStatusBadge.textContent = '🟢 Activado';
+        enableStatusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+        enableStatusBadge.style.color = '#34d399';
+      } else {
+        enableStatusBadge.textContent = '🔴 Desactivado';
+        enableStatusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+        enableStatusBadge.style.color = '#f87171';
+      }
+    }
+
+    if (shortsStatusBadge) {
+      if (s.blockYouTubeShorts) {
+        shortsStatusBadge.textContent = '🟢 Activado';
+        shortsStatusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+        shortsStatusBadge.style.color = '#34d399';
+      } else {
+        shortsStatusBadge.textContent = '🔴 Desactivado';
+        shortsStatusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+        shortsStatusBadge.style.color = '#f87171';
+      }
+    }
+
+    if (uninstallBadge) {
+      uninstallBadge.style.display = s.uninstallProtection ? 'flex' : 'none';
+    }
+  }
+
+  updateStatusPills(settings);
+
+  // ── AUTOMATIC BACKGROUND SYNC ON OPEN ──────────────────
+  syncWithDjangoApi().then(async (result) => {
+    if (result && result.ok) {
+      const fresh = await getSettings();
+      updateStatusPills(fresh);
+      if (statusBadge) {
+        statusBadge.textContent = '🟢 Conectado';
+        statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+        statusBadge.style.color = '#34d399';
+      }
+    } else if (statusBadge) {
+      statusBadge.textContent = '🔴 Desconectado';
+      statusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+      statusBadge.style.color = '#f87171';
+    }
+  }).catch(() => {});
+
+  // ── Current site ────────────────────────
+  const siteNameEl = document.getElementById('siteName');
+  const blockBtn   = document.getElementById('blockSiteBtn');
+  const blockIcon  = document.getElementById('blockIcon');
+  const blockLabel = document.getElementById('blockLabel');
+  const favicon    = document.getElementById('siteFavicon');
+
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab && tab.url) currentHostname = extractHostname(tab.url);
+  } catch { /* no access */ }
+
+  if (!currentHostname || currentHostname.includes('chrome') || currentHostname.includes('extension')) {
+    siteNameEl.textContent = 'No se puede bloquear esta página';
+    blockBtn.disabled = true;
+    blockLabel.textContent = 'No disponible';
+    blockIcon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>`;
+    favicon.classList.add('hidden');
+  } else {
+    siteNameEl.textContent = currentHostname;
+    favicon.src = `https://www.google.com/s2/favicons?domain=${currentHostname}&sz=32`;
+    favicon.onerror = () => favicon.classList.add('hidden');
+
+    const isBlocked = settings.customBlocklist.includes(currentHostname);
+    updateBlockButton(isBlocked, blockBtn, blockIcon, blockLabel);
+
+    blockBtn.addEventListener('click', async () => {
+      const s = await getSettings();
+      const idx = s.customBlocklist.indexOf(currentHostname);
+      if (idx >= 0) {
+        s.customBlocklist.splice(idx, 1);
+        await saveSettings({ customBlocklist: s.customBlocklist });
+        updateBlockButton(false, blockBtn, blockIcon, blockLabel);
+      } else {
+        s.customBlocklist.push(currentHostname);
+        await saveSettings({ customBlocklist: s.customBlocklist });
+        updateBlockButton(true, blockBtn, blockIcon, blockLabel);
+        await applyBlockToCurrentTab(s);
+      }
+      // Force immediate rule rebuild & instant sync with Django server
+      chrome.runtime.sendMessage({ type: 'TRIGGER_API_SYNC' }).catch(() => {});
+      syncWithDjangoApi().catch(() => {});
+    });
+  }
+
+  // ── Settings gear ───────────────────────
+  document.getElementById('settingsBtn').addEventListener('click', () => {
+    chrome.runtime.openOptionsPage();
+    window.close();
+  });
+
+  // ── Rating stars ────────────────────────
+  document.querySelectorAll('.full-stars label a').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      chrome.tabs.create({ url: link.href });
+      window.close();
+    });
+  });
+}
+
+async function applyBlockToCurrentTab(settings) {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab) return;
+
+    if (settings.blockAction === 'closeTab') {
+      window.close();
+      await chrome.tabs.remove(tab.id);
+    } else if (settings.blockAction === 'redirect') {
+      await chrome.tabs.update(tab.id, { url: settings.redirectUrl });
+      window.close();
+    } else {
+      // blockPage (default)
+      const blockedUrl = chrome.runtime.getURL(
+        'blocked/blocked.html?domain=' + encodeURIComponent(currentHostname)
+      );
+      await chrome.tabs.update(tab.id, { url: blockedUrl });
+      window.close();
+    }
+  } catch { /* tab may be gone */ }
+}
+
+function updateBlockButton(isBlocked, btn, icon, label) {
+  if (isBlocked) {
+    btn.classList.add('is-blocked');
+    icon.innerHTML = SVG_CHECK;
+    label.textContent = 'Desbloquear este sitio';
+  } else {
+    btn.classList.remove('is-blocked');
+    icon.innerHTML = SVG_BLOCK;
+    label.textContent = 'Bloquear este sitio';
+  }
+}
+
+init();

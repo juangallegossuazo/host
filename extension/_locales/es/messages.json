@@ -1,0 +1,8 @@
+{
+  "appName": {
+    "message": "Host Blocker"
+  },
+  "shortDesc": {
+    "message": "Bloquea sitios web no deseados. Sincroniza con el repositorio de GitHub."
+  }
+}

@@ -1,0 +1,35 @@
+# --- MÚSICA / STREAMING DE AUDIO ---
+# Spotify
+0.0.0.0 spotify.com
+0.0.0.0 www.spotify.com
+0.0.0.0 open.spotify.com
+# SoundCloud
+0.0.0.0 soundcloud.com
+0.0.0.0 www.soundcloud.com
+# Deezer
+0.0.0.0 deezer.com
+0.0.0.0 www.deezer.com
+# Tidal
+0.0.0.0 tidal.com
+0.0.0.0 www.tidal.com
+# Apple Music
+0.0.0.0 music.apple.com
+# YouTube Music
+0.0.0.0 music.youtube.com
+# Amazon Music
+0.0.0.0 music.amazon.com
+# Pandora
+0.0.0.0 pandora.com
+0.0.0.0 www.pandora.com
+# iHeartRadio
+0.0.0.0 iheart.com
+0.0.0.0 www.iheart.com
+# Audiomack
+0.0.0.0 audiomack.com
+0.0.0.0 www.audiomack.com
+# Napster
+0.0.0.0 napster.com
+0.0.0.0 www.napster.com
+# Shazam
+0.0.0.0 shazam.com
+0.0.0.0 www.shazam.com

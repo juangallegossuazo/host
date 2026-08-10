@@ -1,0 +1,40 @@
+# --- COMPRAS / E-COMMERCE ---
+# Amazon
+0.0.0.0 amazon.com
+0.0.0.0 www.amazon.com
+# eBay
+0.0.0.0 ebay.com
+0.0.0.0 www.ebay.com
+# AliExpress
+0.0.0.0 aliexpress.com
+0.0.0.0 www.aliexpress.com
+# MercadoLibre
+0.0.0.0 mercadolibre.com
+0.0.0.0 www.mercadolibre.com
+# Walmart
+0.0.0.0 walmart.com
+0.0.0.0 www.walmart.com
+# Target
+0.0.0.0 target.com
+0.0.0.0 www.target.com
+# Best Buy
+0.0.0.0 bestbuy.com
+0.0.0.0 www.bestbuy.com
+# Etsy
+0.0.0.0 etsy.com
+0.0.0.0 www.etsy.com
+# Shopify
+0.0.0.0 shopify.com
+0.0.0.0 www.shopify.com
+# SHEIN
+0.0.0.0 shein.com
+0.0.0.0 www.shein.com
+# Temu
+0.0.0.0 temu.com
+0.0.0.0 www.temu.com
+# Wish
+0.0.0.0 wish.com
+0.0.0.0 www.wish.com
+# Mercado Pago
+0.0.0.0 mercadopago.com
+0.0.0.0 www.mercadopago.com

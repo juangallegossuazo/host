@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlockSite</title>
+  <title>Host Blocker</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
             <path d="M12 7L13.2 10.8L17 12L13.2 13.2L12 17L10.8 13.2L7 12L10.8 10.8L12 7Z" fill="#6366f1"/>
           </svg>
         </span>
-        <span class="title">Block<em>Site</em></span>
+        <span class="title">Host<em>Blocker</em></span>
       </div>
       <button class="gear-btn" id="settingsBtn" aria-label="Settings">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +32,7 @@
     <div class="site-section" id="currentSiteSection">
       <div class="site-identity">
         <img id="siteFavicon" class="site-favicon" src="" alt="">
-        <span class="site-name" id="siteName">Cargando…</span>
+        <span class="site-name" id="siteName">Cargando...</span>
       </div>
       <button class="btn-block" id="blockSiteBtn">
         <span class="btn-icon" id="blockIcon">
@@ -45,13 +45,13 @@
       </button>
     </div>
 
-    <!-- Toggle status cards (Read-only - Admin Managed) -->
+    <!-- Status badges -->
     <div class="toggle-cards">
       <div class="toggle-card">
         <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 4px 0;">
           <span class="toggle-card-label" style="font-weight: 600;">Bloqueo Principal</span>
           <span id="enableStatusBadge" style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(16, 185, 129, 0.2); color: #34d399;">
-            🟢 Activado
+            Activado
           </span>
         </div>
       </div>
@@ -60,12 +60,19 @@
         <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 4px 0;">
           <span class="toggle-card-label" style="font-weight: 600;">YouTube Shorts</span>
           <span id="shortsStatusBadge" style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(16, 185, 129, 0.2); color: #34d399;">
-            🟢 Activado
+            Activado
           </span>
         </div>
       </div>
     </div>
 
+    <!-- Categories -->
+    <div class="categories-section">
+      <div class="categories-header">
+        <span class="categories-title">Categorias Activas</span>
+        <span id="categoriesCount" style="font-size: 11px; color: var(--text-secondary);">0/10</span>
+      </div>
+      <div class="categories-grid" id="categoriesGrid"></div>
     </div>
 
     <!-- Rating widget -->

@@ -1,0 +1,55 @@
+# --- DATING / CITAS ---
+# Tinder
+0.0.0.0 tinder.com
+0.0.0.0 www.tinder.com
+# Bumble
+0.0.0.0 bumble.com
+0.0.0.0 www.bumble.com
+# OkCupid
+0.0.0.0 okcupid.com
+0.0.0.0 www.okcupid.com
+# Match.com
+0.0.0.0 match.com
+0.0.0.0 www.match.com
+# Grindr
+0.0.0.0 grindr.com
+0.0.0.0 www.grindr.com
+# Hinge
+0.0.0.0 hinge.co
+0.0.0.0 www.hinge.co
+# Happn
+0.0.0.0 happn.com
+0.0.0.0 www.happn.com
+# Plenty of Fish
+0.0.0.0 plentyoffish.com
+0.0.0.0 www.plentyoffish.com
+# Zoosk
+0.0.0.0 zoosk.com
+0.0.0.0 www.zoosk.com
+# eHarmony
+0.0.0.0 eharmony.com
+0.0.0.0 www.eharmony.com
+# Coffee Meets Bagel
+0.0.0.0 coffeemeetsbagel.com
+0.0.0.0 www.coffeemeetsbagel.com
+# Her
+0.0.0.0 weareher.com
+0.0.0.0 www.weareher.com
+# Feeld
+0.0.0.0 feeld.co
+0.0.0.0 www.feeld.co
+# Pure
+0.0.0.0 pure.app
+0.0.0.0 www.pure.app
+# Lex
+0.0.0.0 lex.lgbt
+0.0.0.0 www.lex.lgbt
+# Adult Friend Finder
+0.0.0.0 adultfriendfinder.com
+0.0.0.0 www.adultfriendfinder.com
+# Fling
+0.0.0.0 fling.com
+0.0.0.0 www.fling.com
+# Ashley Madison
+0.0.0.0 ashleymadison.com
+0.0.0.0 www.ashleymadison.com

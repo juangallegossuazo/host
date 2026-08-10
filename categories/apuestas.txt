@@ -1,0 +1,67 @@
+# --- APUESTAS / CASINO ---
+# Bet365
+0.0.0.0 bet365.com
+0.0.0.0 www.bet365.com
+# DraftKings
+0.0.0.0 draftkings.com
+0.0.0.0 www.draftkings.com
+# FanDuel
+0.0.0.0 fanduel.com
+0.0.0.0 www.fanduel.com
+# PokerStars
+0.0.0.0 pokerstars.com
+0.0.0.0 www.pokerstars.com
+# 888.com
+0.0.0.0 888.com
+0.0.0.0 www.888.com
+# Betway
+0.0.0.0 betway.com
+0.0.0.0 www.betway.com
+# Unibet
+0.0.0.0 unibet.com
+0.0.0.0 www.unibet.com
+# William Hill
+0.0.0.0 williamhill.com
+0.0.0.0 www.williamhill.com
+# Betfair
+0.0.0.0 betfair.com
+0.0.0.0 www.betfair.com
+# Paddy Power
+0.0.0.0 paddypower.com
+0.0.0.0 www.paddypower.com
+# Ladbrokes
+0.0.0.0 ladbrokes.com
+0.0.0.0 www.ladbrokes.com
+# Coral
+0.0.0.0 coral.co.uk
+0.0.0.0 www.coral.co.uk
+# Sky Bet
+0.0.0.0 skybet.com
+0.0.0.0 www.skybet.com
+# Melbet
+0.0.0.0 melbet.com
+0.0.0.0 www.melbet.com
+# 1xBet
+0.0.0.0 1xbet.com
+0.0.0.0 www.1xbet.com
+# Betsson
+0.0.0.0 betsson.com
+0.0.0.0 www.betsson.com
+# Pinnacle
+0.0.0.0 pinnacle.com
+0.0.0.0 www.pinnacle.com
+# Casumo
+0.0.0.0 casumo.com
+0.0.0.0 www.casumo.com
+# LeoVegas
+0.0.0.0 leovegas.com
+0.0.0.0 www.leovegas.com
+# Mr Green
+0.0.0.0 mrgreen.com
+0.0.0.0 www.mrgreen.com
+# Royal Panda
+0.0.0.0 royalpanda.com
+0.0.0.0 www.royalpanda.com
+# 22Bet
+0.0.0.0 22bet.com
+0.0.0.0 www.22bet.com

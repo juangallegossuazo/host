@@ -1,6 +1,4 @@
-# --- JUEGOS ONLINE ---
-# Sitios de juegos en línea - Bloqueados por Host Blocker
-
+# --- JUEGOS ---
 # Plataformas principales
 0.0.0.0 friv.com
 0.0.0.0 www.friv.com
@@ -19,7 +17,6 @@
 0.0.0.0 classic.minecraft.net
 0.0.0.0 fortnite.com
 0.0.0.0 www.fortnite.com
-
 # Juegos gratuitos
 0.0.0.0 007arcadegames.com
 0.0.0.0 www.007arcadegames.com
@@ -39,7 +36,6 @@
 0.0.0.0 www.123juegos.com
 0.0.0.0 14juegos.com
 0.0.0.0 www.14juegos.com
-
 # Flash / HTML5
 0.0.0.0 kongregate.com
 0.0.0.0 www.kongregate.com
@@ -59,7 +55,6 @@
 0.0.0.0 www.twoplayergames.org
 0.0.0.0 gamesgames.com
 0.0.0.0 www.gamesgames.com
-
 # Acción / lucha
 0.0.0.0 fightinggames.com
 0.0.0.0 www.fightinggames.com
@@ -71,7 +66,6 @@
 0.0.0.0 www.racinggames.com
 0.0.0.0 adventuregames.com
 0.0.0.0 www.adventuregames.com
-
 # Juegos de mesa / puzzles
 0.0.0.0 chess.com
 0.0.0.0 www.chess.com
@@ -85,7 +79,6 @@
 0.0.0.0 www.coolmathgames.com
 0.0.0.0 mathplayground.com
 0.0.0.0 www.mathplayground.com
-
 # Tiendas de juegos
 0.0.0.0 gamestop.com
 0.0.0.0 www.gamestop.com

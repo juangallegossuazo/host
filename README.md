@@ -15,10 +15,16 @@ Extensión de navegador que bloquea sitios web no deseados. La lista se sincroni
 
 | Categoría | Icono | Contenido |
 |-----------|-------|-----------|
-| Contenido Adulto | 🔞 | Pornografía, cams, dating adulto |
-| Juegos Online | 🎮 | Plataformas de juegos web |
+| Redes Sociales | 💬 | Facebook, Instagram, TikTok, Twitter, etc. |
+| Video / Streaming | 📺 | Netflix, YouTube, Twitch, Disney+, etc. |
+| Música | 🎵 | Spotify, SoundCloud, Deezer, etc. |
+| Contenido Adulto | 🔞 | Pornografía, cams, OnlyFans, etc. |
+| Juegos | 🎮 | Roblox, Steam, Fortnite, etc. |
 | Descargas | 📥 | Softonic, torrents, descargas |
-| Entretenimiento | 📺 | Redes sociales, streaming |
+| Apuestas / Casino | 🎰 | Bet365, PokerStars, etc. |
+| Dating / Citas | ❤️ | Tinder, Bumble, OkCupid, etc. |
+| Compras | 🛒 | Amazon, eBay, AliExpress, etc. |
+| Entretenimiento | 😂 | 9GAG, BuzzFeed, Imgur, etc. |
 
 ## Instalación
 
@@ -50,15 +56,23 @@ Edita los archivos en `categories/` y haz push. La extensión sincroniza cada 30
 host/
 ├── README.md
 ├── categories/
-│   ├── adult.txt
-│   ├── games.txt
-│   ├── downloads.txt
-│   └── entertainment.txt
+│   ├── redes_sociales.txt
+│   ├── video.txt
+│   ├── musica.txt
+│   ├── xxx.txt
+│   ├── juegos.txt
+│   ├── descargas.txt
+│   ├── apuestas.txt
+│   ├── dating.txt
+│   ├── compras.txt
+│   └── entretenimiento.txt
 └── extension/
     ├── manifest.json
-    ├── background.js
-    ├── popup.html / popup.js
-    ├── content.js
+    ├── background/
+    ├── popup/
+    ├── options/
+    ├── blocked/
+    ├── content/
     └── icons/
 ```
 

@@ -574,18 +574,34 @@ function initBackupHandlers() {
   const hintEl = document.getElementById('backupStatusHint');
 
   if (exportBtn) {
-    exportBtn.addEventListener('click', (e) => {
+    exportBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      alert('🔒 La función de exportar copia de seguridad está deshabilitada para usuarios. Toda la información se respalda centralmente en el Servidor API del Administrador.');
-      if (hintEl) hintEl.textContent = '🔒 Acción denegada: Copia de seguridad deshabilitada para usuarios.';
+      const data = JSON.stringify(settings, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'hostblocker-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      if (hintEl) hintEl.textContent = '✅ Copia de seguridad exportada correctamente.';
     });
   }
 
   if (importInput) {
-    importInput.addEventListener('change', (e) => {
+    importInput.addEventListener('change', async (e) => {
       e.preventDefault();
-      alert('🔒 La función de importar copia de seguridad está deshabilitada para usuarios.');
-      if (hintEl) hintEl.textContent = '🔒 Acción denegada: Importación restringida.';
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const imported = JSON.parse(text);
+        await saveSettings(imported);
+        if (hintEl) hintEl.textContent = '✅ Configuración importada correctamente.';
+        await init();
+      } catch {
+        if (hintEl) hintEl.textContent = '❌ Error al importar: archivo inválido.';
+      }
     });
   }
 
@@ -618,20 +634,6 @@ function renderSecuritySettings() {
   const pinInput = document.getElementById('pinCodeInput');
   const savePinBtn = document.getElementById('savePinBtn');
   const uninstallToggle = document.getElementById('uninstallProtectionToggle');
-
-  if (djangoApiUrlInput) {
-    djangoApiUrlInput.value = settings.apiUrl || 'http://127.0.0.1:8000/api/v1/sync/';
-    djangoApiUrlInput.addEventListener('change', async () => {
-      await saveSettings({ apiUrl: djangoApiUrlInput.value.trim() });
-    });
-  }
-
-  if (djangoApiKeyInput) {
-    djangoApiKeyInput.value = settings.apiKey || '';
-    djangoApiKeyInput.addEventListener('change', async () => {
-      await saveSettings({ apiKey: djangoApiKeyInput.value.trim() });
-    });
-  }
 
   if (pinToggle && pinRow) {
     pinToggle.checked = !!settings.pinEnabled;

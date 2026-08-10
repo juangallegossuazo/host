@@ -1,0 +1,60 @@
+# --- VIDEO / STREAMING ---
+# Netflix
+0.0.0.0 netflix.com
+0.0.0.0 www.netflix.com
+# Hulu
+0.0.0.0 hulu.com
+0.0.0.0 www.hulu.com
+# Amazon Prime Video
+0.0.0.0 primevideo.com
+0.0.0.0 www.primevideo.com
+# Disney+
+0.0.0.0 disneyplus.com
+0.0.0.0 www.disneyplus.com
+# HBO Max / Max
+0.0.0.0 hbomax.com
+0.0.0.0 www.hbomax.com
+0.0.0.0 max.com
+0.0.0.0 www.max.com
+# Peacock
+0.0.0.0 peacocktv.com
+0.0.0.0 www.peacocktv.com
+# Paramount+
+0.0.0.0 paramountplus.com
+0.0.0.0 www.paramountplus.com
+# Apple TV
+0.0.0.0 appletv.com
+0.0.0.0 www.appletv.com
+# YouTube
+0.0.0.0 youtube.com
+0.0.0.0 www.youtube.com
+0.0.0.0 m.youtube.com
+# Twitch
+0.0.0.0 twitch.tv
+0.0.0.0 www.twitch.tv
+# Bilibili
+0.0.0.0 bilibili.com
+0.0.0.0 www.bilibili.com
+# Crunchyroll
+0.0.0.0 crunchyroll.com
+0.0.0.0 www.crunchyroll.com
+# Funimation
+0.0.0.0 funimation.com
+0.0.0.0 www.funimation.com
+# Pluto TV
+0.0.0.0 pluto.tv
+0.0.0.0 www.pluto.tv
+# Tubi
+0.0.0.0 tubi.tv
+0.0.0.0 www.tubi.tv
+# Roku Channel
+0.0.0.0 therokuchannel.roku.com
+# Dailymotion
+0.0.0.0 dailymotion.com
+0.0.0.0 www.dailymotion.com
+# Vimeo
+0.0.0.0 vimeo.com
+0.0.0.0 www.vimeo.com
+# AfreecaTV
+0.0.0.0 afreecatv.com
+0.0.0.0 www.afreecatv.com

@@ -1,4 +1,5 @@
-import { getSettings, saveSettings, syncWithDjangoApi, extractHostname } from '../common/storage.js';
+import { CATEGORY_META } from '../common/constants.js';
+import { getSettings, saveSettings, syncWithDjangoApi, getGithubPresets, extractHostname } from '../common/storage.js';
 
 let currentHostname = null;
 
@@ -23,11 +24,11 @@ async function init() {
   function updateStatusPills(s) {
     if (enableStatusBadge) {
       if (s.enabled !== false) {
-        enableStatusBadge.textContent = '🟢 Activado';
+        enableStatusBadge.textContent = 'Activado';
         enableStatusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
         enableStatusBadge.style.color = '#34d399';
       } else {
-        enableStatusBadge.textContent = '🔴 Desactivado';
+        enableStatusBadge.textContent = 'Desactivado';
         enableStatusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
         enableStatusBadge.style.color = '#f87171';
       }
@@ -35,11 +36,11 @@ async function init() {
 
     if (shortsStatusBadge) {
       if (s.blockYouTubeShorts) {
-        shortsStatusBadge.textContent = '🟢 Activado';
+        shortsStatusBadge.textContent = 'Activado';
         shortsStatusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
         shortsStatusBadge.style.color = '#34d399';
       } else {
-        shortsStatusBadge.textContent = '🔴 Desactivado';
+        shortsStatusBadge.textContent = 'Desactivado';
         shortsStatusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
         shortsStatusBadge.style.color = '#f87171';
       }
@@ -52,18 +53,61 @@ async function init() {
 
   updateStatusPills(settings);
 
+  // ── Render Categories ─────────────────────
+  async function renderCategories() {
+    const grid = document.getElementById('categoriesGrid');
+    const countEl = document.getElementById('categoriesCount');
+    if (!grid) return;
+
+    const s = await getSettings();
+    const activeCount = Object.values(s.categoryToggles).filter(Boolean).length;
+    if (countEl) countEl.textContent = `${activeCount}/${Object.keys(CATEGORY_META).length}`;
+
+    grid.replaceChildren();
+
+    for (const [catId, meta] of Object.entries(CATEGORY_META)) {
+      const isActive = s.categoryToggles[catId] || false;
+
+      const card = document.createElement('div');
+      card.className = 'category-card' + (isActive ? ' active' : '');
+
+      const icon = document.createElement('span');
+      icon.className = 'category-icon';
+      icon.textContent = meta.icon;
+
+      const label = document.createElement('span');
+      label.className = 'category-label';
+      label.textContent = meta.label;
+
+      card.append(icon, label);
+
+      card.addEventListener('click', async () => {
+        const current = await getSettings();
+        current.categoryToggles[catId] = !current.categoryToggles[catId];
+        await saveSettings({ categoryToggles: current.categoryToggles });
+        renderCategories();
+        chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+      });
+
+      grid.appendChild(card);
+    }
+  }
+
+  await renderCategories();
+
   // ── AUTOMATIC BACKGROUND SYNC ON OPEN ──────────────────
   syncWithDjangoApi().then(async (result) => {
     if (result && result.ok) {
       const fresh = await getSettings();
       updateStatusPills(fresh);
+      await renderCategories();
       if (statusBadge) {
-        statusBadge.textContent = '🟢 Conectado';
+        statusBadge.textContent = 'Conectado';
         statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
         statusBadge.style.color = '#34d399';
       }
     } else if (statusBadge) {
-      statusBadge.textContent = '🔴 Desconectado';
+      statusBadge.textContent = 'Desconectado';
       statusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
       statusBadge.style.color = '#f87171';
     }
@@ -110,7 +154,6 @@ async function init() {
         updateBlockButton(true, blockBtn, blockIcon, blockLabel);
         await applyBlockToCurrentTab(s);
       }
-      // Force immediate rule rebuild & instant sync with Django server
       chrome.runtime.sendMessage({ type: 'TRIGGER_API_SYNC' }).catch(() => {});
       syncWithDjangoApi().catch(() => {});
     });
@@ -144,7 +187,6 @@ async function applyBlockToCurrentTab(settings) {
       await chrome.tabs.update(tab.id, { url: settings.redirectUrl });
       window.close();
     } else {
-      // blockPage (default)
       const blockedUrl = chrome.runtime.getURL(
         'blocked/blocked.html?domain=' + encodeURIComponent(currentHostname)
       );

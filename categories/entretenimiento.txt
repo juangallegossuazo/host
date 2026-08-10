@@ -1,0 +1,34 @@
+# --- ENTRETENIMIENTO GENERAL ---
+# BuzzFeed
+0.0.0.0 buzzfeed.com
+0.0.0.0 www.buzzfeed.com
+# 9GAG
+0.0.0.0 9gag.com
+0.0.0.0 www.9gag.com
+# Imgur
+0.0.0.0 imgur.com
+0.0.0.0 www.imgur.com
+# iFunny
+0.0.0.0 ifunny.co
+0.0.0.0 www.ifunny.co
+# Bored Panda
+0.0.0.0 boredpanda.com
+0.0.0.0 www.boredpanda.com
+# Diply
+0.0.0.0 diply.com
+0.0.0.0 www.diply.com
+# LADBible
+0.0.0.0 ladbible.com
+0.0.0.0 www.ladbible.com
+# UNILAD
+0.0.0.0 unilad.com
+0.0.0.0 www.unilad.com
+# Distractify
+0.0.0.0 distractify.com
+0.0.0.0 www.distractify.com
+# The Chive
+0.0.0.0 thechive.com
+0.0.0.0 www.thechive.com
+# Memedroid
+0.0.0.0 memedroid.com
+0.0.0.0 www.memedroid.com

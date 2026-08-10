@@ -1,6 +1,4 @@
 # --- DESCARGAS ---
-# Sitios de descarga de software - Bloqueados por Host Blocker
-
 # Softonic
 0.0.0.0 softonic.com
 0.0.0.0 www.softonic.com
@@ -15,7 +13,6 @@
 0.0.0.0 www.softonic.it
 0.0.0.0 softonic.com.br
 0.0.0.0 www.softonic.com.br
-
 # Uptodown
 0.0.0.0 uptodown.com
 0.0.0.0 www.uptodown.com
@@ -27,7 +24,6 @@
 0.0.0.0 www.uptodown.fr
 0.0.0.0 uptodown.it
 0.0.0.0 www.uptodown.it
-
 # Malavida
 0.0.0.0 malavida.com
 0.0.0.0 www.malavida.com
@@ -37,34 +33,27 @@
 0.0.0.0 www.malavida.de
 0.0.0.0 malavida.fr
 0.0.0.0 www.malavida.fr
-
 # FileHippo
 0.0.0.0 filehippo.com
 0.0.0.0 www.filehippo.com
 0.0.0.0 es.filehippo.com
-
 # Softpedia
 0.0.0.0 softpedia.com
 0.0.0.0 www.softpedia.com
 0.0.0.0 softpedia.ro
 0.0.0.0 www.softpedia.ro
-
 # MajorGeeks
 0.0.0.0 majorgeeks.com
 0.0.0.0 www.majorgeeks.com
-
 # FileHorse
 0.0.0.0 filehorse.com
 0.0.0.0 www.filehorse.com
-
 # Chip
 0.0.0.0 chip.de
 0.0.0.0 www.chip.de
-
 # CNET
 0.0.0.0 download.cnet.com
 0.0.0.0 www.download.cnet.com
-
 # Torrents
 0.0.0.0 thepiratebay.org
 0.0.0.0 www.thepiratebay.org
@@ -88,7 +77,6 @@
 0.0.0.0 www.yts.mx
 0.0.0.0 fitgirl-repacks.site
 0.0.0.0 www.fitgirl-repacks.site
-
 # Conversores / descargadores
 0.0.0.0 y2mate.com
 0.0.0.0 www.y2mate.com
@@ -96,7 +84,6 @@
 0.0.0.0 www.savefrom.net
 0.0.0.0 clipconverter.cc
 0.0.0.0 www.clipconverter.cc
-
 # Software crackeado
 0.0.0.0 getintopc.com
 0.0.0.0 www.getintopc.com

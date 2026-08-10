@@ -404,7 +404,7 @@ async function renderCategories() {
     const isActive = settings.categoryToggles[catId] || false;
 
     const card = document.createElement('div');
-    card.className = 'category-card';
+    card.className = 'category-card ' + (isActive ? 'cat-active' : 'cat-inactive');
 
     const header = document.createElement('div');
     header.className = 'category-card-header';
@@ -541,6 +541,7 @@ async function renderCategories() {
     toggleInput.addEventListener('change', async () => {
       settings.categoryToggles[catId] = toggleInput.checked;
       await saveSettings({ categoryToggles: settings.categoryToggles });
+      renderCategories();
       chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
     });
 

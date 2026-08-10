@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Blocker - Filtro de Contenido</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 400px;
+      min-height: 500px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    .header h1 {
+      color: white;
+      font-size: 24px;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .header p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+    }
+    
+    .container {
+      padding: 20px;
+    }
+    
+    .category {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+    
+    .category:hover {
+      transform: translateY(-2px);
+    }
+    
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .category-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .category-icon {
+      font-size: 20px;
+    }
+    
+    .toggle {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+    
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    
+    .category-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      color: #2196F3;
+    }
+    
+    .blocked-list {
+      max-height: 150px;
+      overflow-y: auto;
+      margin-top: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      display: none;
+    }
+    
+    .blocked-list.show {
+      display: block;
+    }
+    
+    .blocked-item {
+      padding: 5px 0;
+      font-size: 11px;
+      color: #666;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .blocked-item:last-child {
+      border-bottom: none;
+    }
+    
+    .show-more {
+      color: #2196F3;
+      cursor: pointer;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 5px;
+    }
+    
+    .show-more:hover {
+      text-decoration: underline;
+    }
+    
+    .footer {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    .footer button {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    
+    .footer button:hover {
+      background: #1976D2;
+    }
+    
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .status.active {
+      background: #e8f5e9;
+      color: #2e7d32;
+      display: block;
+    }
+    
+    .status.inactive {
+      background: #ffebee;
+      color: #c62828;
+      display: block;
+    }
+    
+    .search-box {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: #2196F3;
+    }
+    
+    .section-title {
+      color: white;
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🛡️ Host Blocker</h1>
+    <p>Filtro de Contenido para Familias</p>
+  </div>
+  
+  <div class="container">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar dominio...">
+    
+    <div class="section-title">Categorías de Bloqueo</div>
+    
+    <div class="category" data-category="adult">
+      <div class="category-header">
+        <span class="category-title">🔞 Contenido Adulto</span>
+        <label class="toggle">
+          <input type="checkbox" id="toggleAdult" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="category-stats">
+        <span>Sitios bloqueados: <span class="stat-value" id="adultCount">0</span></span>
+        <span class="show-more" onclick="toggleList('adult')">Ver lista</span>
+      </div>
+      <div class="blocked-list" id="adultList"></div>
+    </div>
+    
+    <div class="category" data-category="games">
+      <div class="category-header">
+        <span class="category-title">🎮 Juegos Online</span>
+        <label class="toggle">
+          <input type="checkbox" id="toggleGames" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="category-stats">
+        <span>Sitios bloqueados: <span class="stat-value" id="gamesCount">0</span></span>
+        <span class="show-more" onclick="toggleList('games')">Ver lista</span>
+      </div>
+      <div class="blocked-list" id="gamesList"></div>
+    </div>
+    
+    <div class="category" data-category="downloads">
+      <div class="category-header">
+        <span class="category-title">📥 Descargas</span>
+        <label class="toggle">
+          <input type="checkbox" id="toggleDownloads" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="category-stats">
+        <span>Sitios bloqueados: <span class="stat-value" id="downloadsCount">0</span></span>
+        <span class="show-more" onclick="toggleList('downloads')">Ver lista</span>
+      </div>
+      <div class="blocked-list" id="downloadsList"></div>
+    </div>
+    
+    <div class="category" data-category="entertainment">
+      <div class="category-header">
+        <span class="category-title">📺 Entretenimiento</span>
+        <label class="toggle">
+          <input type="checkbox" id="toggleEntertainment" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="category-stats">
+        <span>Sitios bloqueados: <span class="stat-value" id="entertainmentCount">0</span></span>
+        <span class="show-more" onclick="toggleList('entertainment')">Ver lista</span>
+      </div>
+      <div class="blocked-list" id="entertainmentList"></div>
+    </div>
+    
+    <div id="statusMessage" class="status"></div>
+  </div>
+  
+  <div class="footer">
+    <button id="saveBtn">💾 Guardar Configuración</button>
+    <button id="resetBtn" style="margin-left: 10px; background: #f44336;">🔄 Restablecer</button>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

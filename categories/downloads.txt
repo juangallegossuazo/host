@@ -1,0 +1,197 @@
+# ====================================
+# SITIOS DE DESCARGAS - BLOQUEADOS
+# ====================================
+
+# --- SOFTONIC ---
+0.0.0.0 softonic.com
+0.0.0.0 www.softonic.com
+0.0.0.0 es.softonic.com
+0.0.0.0 softonic.es
+0.0.0.0 www.softonic.es
+0.0.0.0 softonic.com.mx
+0.0.0.0 www.softonic.com.mx
+0.0.0.0 mx.softonic.com
+0.0.0.0 softonic.de
+0.0.0.0 www.softonic.de
+0.0.0.0 softonic.fr
+0.0.0.0 www.softonic.fr
+0.0.0.0 softonic.it
+0.0.0.0 www.softonic.it
+0.0.0.0 softonic.jp
+0.0.0.0 www.softonic.jp
+0.0.0.0 softonic.com.br
+0.0.0.0 www.softonic.com.br
+
+# --- UPTODOWN ---
+0.0.0.0 uptodown.com
+0.0.0.0 www.uptodown.com
+0.0.0.0 es.uptodown.com
+0.0.0.0 www.es.uptodown.com
+0.0.0.0 mx.uptodown.com
+0.0.0.0 www.mx.uptodown.com
+0.0.0.0 uptodown.net
+0.0.0.0 www.uptodown.net
+0.0.0.0 uptodown.de
+0.0.0.0 www.uptodown.de
+0.0.0.0 uptodown.fr
+0.0.0.0 www.uptodown.fr
+0.0.0.0 uptodown.it
+0.0.0.0 www.uptodown.it
+0.0.0.0 uptodown.com.br
+0.0.0.0 www.uptodown.com.br
+
+# --- MALAVIDA ---
+0.0.0.0 malavida.com
+0.0.0.0 www.malavida.com
+0.0.0.0 es.malavida.com
+0.0.0.0 www.es.malavida.com
+0.0.0.0 malavida.de
+0.0.0.0 www.malavida.de
+0.0.0.0 malavida.fr
+0.0.0.0 www.malavida.fr
+0.0.0.0 malavida.it
+0.0.0.0 www.malavida.it
+0.0.0.0 malavida.com.br
+0.0.0.0 www.malavida.com.br
+
+# --- FILEHIPPO ---
+0.0.0.0 filehippo.com
+0.0.0.0 www.filehippo.com
+0.0.0.0 es.filehippo.com
+0.0.0.0 www.es.filehippo.com
+0.0.0.0 filehippo.de
+0.0.0.0 www.filehippo.de
+0.0.0.0 filehippo.fr
+0.0.0.0 www.filehippo.fr
+
+# --- CNET DOWNLOAD ---
+0.0.0.0 download.cnet.com
+0.0.0.0 www.download.cnet.com
+0.0.0.0 cnet.com
+0.0.0.0 www.cnet.com
+0.0.0.0 download.com
+0.0.0.0 www.download.com
+
+# --- SOFTPEDIA ---
+0.0.0.0 softpedia.com
+0.0.0.0 www.softpedia.com
+0.0.0.0 softpedia.ro
+0.0.0.0 www.softpedia.ro
+0.0.0.0 softpedia.de
+0.0.0.0 www.softpedia.de
+0.0.0.0 softpedia.fr
+0.0.0.0 www.softpedia.fr
+0.0.0.0 softpedia.it
+0.0.0.0 www.softpedia.it
+0.0.0.0 softpedia.com.br
+0.0.0.0 www.softpedia.com.br
+
+# --- MAJORGEEKS ---
+0.0.0.0 majorgeeks.com
+0.0.0.0 www.majorgeeks.com
+0.0.0.0 majorgeeks.de
+0.0.0.0 www.majorgeeks.de
+
+# --- FILEHORSE ---
+0.0.0.0 filehorse.com
+0.0.0.0 www.filehorse.com
+0.0.0.0 filehorse.de
+0.0.0.0 www.filehorse.de
+0.0.0.0 filehorse.fr
+0.0.0.0 www.filehorse.fr
+
+# --- CHIP ---
+0.0.0.0 chip.de
+0.0.0.0 www.chip.de
+0.0.0.0 chip.eu
+0.0.0.0 www.chip.eu
+
+# --- OTROS SITIOS DE DESCARGAS ---
+0.0.0.0 downloadcs.net
+0.0.0.0 www.downloadcs.net
+0.0.0.0 downloadcrew.com
+0.0.0.0 www.downloadcrew.com
+0.0.0.0 soft32.com
+0.0.0.0 www.soft32.com
+0.0.0.0 filepuma.com
+0.0.0.0 www.filepuma.com
+0.0.0.0 filehippo.net
+0.0.0.0 www.filehippo.net
+0.0.0.0 filehorse.net
+0.0.0.0 www.filehorse.net
+0.0.0.0 downloadAstro.com
+0.0.0.0 www.downloadAstro.com
+0.0.0.0 downloadatoz.com
+0.0.0.0 www.downloadatoz.com
+0.0.0.0 downloadr.org
+0.0.0.0 www.downloadr.org
+0.0.0.0 downloads.com
+0.0.0.0 www.downloads.com
+0.0.0.0 downloads.zdnet.com
+0.0.0.0 www.downloads.zdnet.com
+0.0.0.0 download.vnu.com.vn
+0.0.0.0 www.download.vnu.com.vn
+
+# --- SITIOS DE DESCARGA DE MUSICA/VIDEOS ---
+0.0.0.0 mp3skull.com
+0.0.0.0 www.mp3skull.com
+0.0.0.0 mp3juices.com
+0.0.0.0 www.mp3juices.com
+0.0.0.0 ytmp3.cc
+0.0.0.0 www.ytmp3.cc
+0.0.0.0 y2mate.com
+0.0.0.0 www.y2mate.com
+0.0.0.0 savethevideo.com
+0.0.0.0 www.savethevideo.com
+0.0.0.0 savefrom.net
+0.0.0.0 www.savefrom.net
+0.0.0.0 clipconverter.cc
+0.0.0.0 www.clipconverter.cc
+0.0.0.0 onlinevideoconverter.com
+0.0.0.0 www.onlinevideoconverter.com
+0.0.0.0 convert2mp3.com
+0.0.0.0 www.convert2mp3.com
+
+# --- TORRENTS Y P2P ---
+0.0.0.0 thepiratebay.org
+0.0.0.0 www.thepiratebay.org
+0.0.0.0 kickasstorrents.com
+0.0.0.0 www.kickasstorrents.com
+0.0.0.0 1337x.to
+0.0.0.0 www.1337x.to
+0.0.0.0 rarbg.to
+0.0.0.0 www.rarbg.to
+0.0.0.0 nyaa.si
+0.0.0.0 www.nyaa.si
+0.0.0.0 animebytes.tv
+0.0.0.0 www.animebytes.tv
+0.0.0.0rutracker.org
+0.0.0.0 www.rutracker.org
+0.0.0.0 limetorrents.info
+0.0.0.0 www.limetorrents.info
+0.0.0.0 torrentgalaxy.to
+0.0.0.0 www.torrentgalaxy.to
+0.0.0.0 eztv.re
+0.0.0.0 www.eztv.re
+0.0.0.0 yts.mx
+0.0.0.0 www.yts.mx
+0.0.0.0 fitgirl-repacks.site
+0.0.0.0 www.fitgirl-repacks.site
+
+# --- SITIOS DE DESCARGA DE SOFTWARE CRACKEADO ---
+0.0.0.0 crackstation.net
+0.0.0.0 www.crackstation.net
+0.0.0.0 cracksmind.com
+0.0.0.0 www.cracksmind.com
+0.0.0.0 crackingpatching.com
+0.0.0.0 www.crackingpatching.com
+0.0.0.0 kubadownload.com
+0.0.0.0 www.kubadownload.com
+0.0.0.0 getintopc.com
+0.0.0.0 www.getintopc.com
+0.0.0.0 oceanofgames.com
+0.0.0.0 www.oceanofgames.com
+0.0.0.0 pcgamestorrents.com
+0.0.0.0 www.pcgamestorrents.com
+0.0.0.0 repelisplus.com
+0.0.0.0 www.repelisplus.com

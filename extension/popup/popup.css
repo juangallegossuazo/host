@@ -418,6 +418,106 @@ body::before {
   color: #a5b4fc;
 }
 
+/* ── PIN Modal ────────────────────────────────────────────────────── */
+
+.pin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.pin-modal-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  width: 280px;
+  text-align: center;
+}
+
+.pin-modal-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.pin-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.pin-modal-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.pin-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  outline: none;
+  margin-bottom: 8px;
+}
+
+.pin-input:focus {
+  border-color: var(--theme);
+}
+
+.pin-error {
+  font-size: 11px;
+  color: #f87171;
+  margin-bottom: 8px;
+}
+
+.pin-modal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pin-btn {
+  flex: 1;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s var(--ease);
+}
+
+.pin-btn-cancel {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+}
+
+.pin-btn-cancel:hover {
+  background: var(--surface-hover);
+}
+
+.pin-btn-confirm {
+  background: var(--theme);
+  color: var(--theme-ink);
+  border-color: var(--theme);
+}
+
+.pin-btn-confirm:hover {
+  background: var(--theme-hover);
+}
+
 /* Rating Widget */
 
 .rating-widget {

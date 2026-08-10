@@ -2,24 +2,67 @@ import { CATEGORY_META } from '../common/constants.js';
 import { getSettings, saveSettings, syncWithDjangoApi, getGithubPresets, extractHostname } from '../common/storage.js';
 
 let currentHostname = null;
+let pendingAction = null;
 
 const SVG_BLOCK = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-  <circle cx="12" cy="12" r="9" stroke="white" stroke-width="2.2"/>
-  <line x1="6.5" y1="6.5" x2="17.5" y2="17.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/>
+  <line x1="6.5" y1="6.5" x2="17.5" y2="17.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
 </svg>`;
 
 const SVG_CHECK = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-  <path d="M5 12l5 5L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M5 12l5 5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
+
+function showPinModal(callback) {
+  const modal = document.getElementById('pinModal');
+  const input = document.getElementById('pinInput');
+  const error = document.getElementById('pinError');
+  const confirmBtn = document.getElementById('pinConfirmBtn');
+  const cancelBtn = document.getElementById('pinCancelBtn');
+
+  modal.style.display = 'flex';
+  input.value = '';
+  error.style.display = 'none';
+  input.focus();
+
+  function cleanup() {
+    modal.style.display = 'none';
+    confirmBtn.removeEventListener('click', onConfirm);
+    cancelBtn.removeEventListener('click', onCancel);
+    input.removeEventListener('keydown', onKeydown);
+  }
+
+  function onConfirm() {
+    const pin = input.value.trim();
+    callback(pin);
+    cleanup();
+  }
+
+  function onCancel() {
+    cleanup();
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Enter') onConfirm();
+    if (e.key === 'Escape') onCancel();
+  }
+
+  confirmBtn.addEventListener('click', onConfirm);
+  cancelBtn.addEventListener('click', onCancel);
+  input.addEventListener('keydown', onKeydown);
+}
+
+function verifyPin(pin, settings) {
+  if (!settings.pinEnabled || !settings.pinCode) return true;
+  return pin === settings.pinCode;
+}
 
 async function init() {
   let settings = await getSettings();
 
-  // ── Status Badges Helper ──────────────────
+  // ── Status Badges ──────────────────
   const enableStatusBadge = document.getElementById('enableStatusBadge');
   const shortsStatusBadge = document.getElementById('shortsStatusBadge');
-  const statusBadge = document.getElementById('apiStatusBadge');
-  const uninstallBadge = document.getElementById('uninstallProtectionBadge');
 
   function updateStatusPills(s) {
     if (enableStatusBadge) {
@@ -45,15 +88,11 @@ async function init() {
         shortsStatusBadge.style.color = '#f87171';
       }
     }
-
-    if (uninstallBadge) {
-      uninstallBadge.style.display = s.uninstallProtection ? 'flex' : 'none';
-    }
   }
 
   updateStatusPills(settings);
 
-  // ── Render Categories ─────────────────────
+  // ── Render Categories ─────────────
   async function renderCategories() {
     const grid = document.getElementById('categoriesGrid');
     const countEl = document.getElementById('categoriesCount');
@@ -83,10 +122,28 @@ async function init() {
 
       card.addEventListener('click', async () => {
         const current = await getSettings();
-        current.categoryToggles[catId] = !current.categoryToggles[catId];
-        await saveSettings({ categoryToggles: current.categoryToggles });
-        renderCategories();
-        chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+        const nextValue = !current.categoryToggles[catId];
+
+        if (current.pinEnabled && current.pinCode) {
+          showPinModal(async (pin) => {
+            if (verifyPin(pin, current)) {
+              current.categoryToggles[catId] = nextValue;
+              await saveSettings({ categoryToggles: current.categoryToggles });
+              renderCategories();
+              updateStatusPills(current);
+              chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+            } else {
+              const error = document.getElementById('pinError');
+              if (error) error.style.display = 'block';
+            }
+          });
+        } else {
+          current.categoryToggles[catId] = nextValue;
+          await saveSettings({ categoryToggles: current.categoryToggles });
+          renderCategories();
+          updateStatusPills(current);
+          chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+        }
       });
 
       grid.appendChild(card);
@@ -95,21 +152,12 @@ async function init() {
 
   await renderCategories();
 
-  // ── AUTOMATIC BACKGROUND SYNC ON OPEN ──────────────────
+  // ── AUTOMATIC BACKGROUND SYNC ──────────────────
   syncWithDjangoApi().then(async (result) => {
     if (result && result.ok) {
       const fresh = await getSettings();
       updateStatusPills(fresh);
       await renderCategories();
-      if (statusBadge) {
-        statusBadge.textContent = 'Conectado';
-        statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
-        statusBadge.style.color = '#34d399';
-      }
-    } else if (statusBadge) {
-      statusBadge.textContent = 'Desconectado';
-      statusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
-      statusBadge.style.color = '#f87171';
     }
   }).catch(() => {});
 
@@ -130,9 +178,10 @@ async function init() {
     blockBtn.disabled = true;
     blockLabel.textContent = 'No disponible';
     blockIcon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
     </svg>`;
     favicon.classList.add('hidden');
+    blockBtn.style.opacity = '0.5';
   } else {
     siteNameEl.textContent = currentHostname;
     favicon.src = `https://www.google.com/s2/favicons?domain=${currentHostname}&sz=32`;
@@ -143,19 +192,35 @@ async function init() {
 
     blockBtn.addEventListener('click', async () => {
       const s = await getSettings();
-      const idx = s.customBlocklist.indexOf(currentHostname);
-      if (idx >= 0) {
-        s.customBlocklist.splice(idx, 1);
-        await saveSettings({ customBlocklist: s.customBlocklist });
-        updateBlockButton(false, blockBtn, blockIcon, blockLabel);
-      } else {
-        s.customBlocklist.push(currentHostname);
-        await saveSettings({ customBlocklist: s.customBlocklist });
-        updateBlockButton(true, blockBtn, blockIcon, blockLabel);
-        await applyBlockToCurrentTab(s);
+
+      async function doBlockAction() {
+        const idx = s.customBlocklist.indexOf(currentHostname);
+        if (idx >= 0) {
+          s.customBlocklist.splice(idx, 1);
+          await saveSettings({ customBlocklist: s.customBlocklist });
+          updateBlockButton(false, blockBtn, blockIcon, blockLabel);
+        } else {
+          s.customBlocklist.push(currentHostname);
+          await saveSettings({ customBlocklist: s.customBlocklist });
+          updateBlockButton(true, blockBtn, blockIcon, blockLabel);
+          await applyBlockToCurrentTab(s);
+        }
+        chrome.runtime.sendMessage({ type: 'TRIGGER_API_SYNC' }).catch(() => {});
+        syncWithDjangoApi().catch(() => {});
       }
-      chrome.runtime.sendMessage({ type: 'TRIGGER_API_SYNC' }).catch(() => {});
-      syncWithDjangoApi().catch(() => {});
+
+      if (s.pinEnabled && s.pinCode) {
+        showPinModal(async (pin) => {
+          if (verifyPin(pin, s)) {
+            await doBlockAction();
+          } else {
+            const error = document.getElementById('pinError');
+            if (error) error.style.display = 'block';
+          }
+        });
+      } else {
+        await doBlockAction();
+      }
     });
   }
 
@@ -163,15 +228,6 @@ async function init() {
   document.getElementById('settingsBtn').addEventListener('click', () => {
     chrome.runtime.openOptionsPage();
     window.close();
-  });
-
-  // ── Rating stars ────────────────────────
-  document.querySelectorAll('.full-stars label a').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      chrome.tabs.create({ url: link.href });
-      window.close();
-    });
   });
 }
 

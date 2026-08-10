@@ -1276,30 +1276,59 @@ html[data-theme="light"] .moon-icon { display: block; }
 .category-actions-row,
 .blocklist-actions-row {
   display: flex;
-  gap: 6px;
-  padding: 6px 8px;
+  flex-direction: row;
+  gap: 8px;
+  padding: 8px 12px;
   border-top: 1px solid var(--border);
 }
 
 .category-action-btn {
   flex: 1;
-  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 10px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   font-family: inherit;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.15s var(--ease);
+  position: relative;
+}
+
+.category-action-btn::before {
+  content: '✓';
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.category-action-btn.btn-active {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+.category-action-btn.btn-active::before {
+  opacity: 1;
+}
+
+.category-action-btn.btn-active.btn-danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
 .category-action-btn:hover {
   background: var(--surface-hover);
   border-color: var(--theme-border);
   color: var(--text);
-}
 }
 
 .site-unblock {

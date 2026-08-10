@@ -274,23 +274,34 @@ async function renderCustomBlocklist() {
     const actionsRow = document.createElement('div');
     actionsRow.className = 'blocklist-actions-row';
 
+    const unblocked = settings.categoryUnblocked[catId] || [];
+    const allUnblocked = unblocked.length >= domains.length;
+
     const unblockAllBtn = document.createElement('button');
-    unblockAllBtn.className = 'category-action-btn';
-    unblockAllBtn.textContent = 'Desbloquear todos';
+    unblockAllBtn.className = 'category-action-btn' + (allUnblocked ? ' btn-active' : '');
+    unblockAllBtn.textContent = allUnblocked ? 'Desbloqueados' : 'Desbloquear todos';
     unblockAllBtn.addEventListener('click', async () => {
-      settings.categoryUnblocked[catId] = [...domains];
-      await saveSettings({ categoryUnblocked: settings.categoryUnblocked });
+      const current = await getSettings();
+      const curUnblocked = current.categoryUnblocked[catId] || [];
+      if (curUnblocked.length >= domains.length) {
+        current.categoryUnblocked[catId] = [];
+      } else {
+        current.categoryUnblocked[catId] = [...domains];
+      }
+      await saveSettings({ categoryUnblocked: current.categoryUnblocked });
       renderCustomBlocklist();
       renderCategories();
       chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
     });
 
+    const isDisabled = settings.categoryToggles[catId] === false;
     const disableBtn = document.createElement('button');
-    disableBtn.className = 'category-action-btn';
-    disableBtn.textContent = 'Desactivar bloqueo';
+    disableBtn.className = 'category-action-btn btn-danger' + (isDisabled ? ' btn-active' : '');
+    disableBtn.textContent = isDisabled ? 'Bloquear' : 'Desactivar';
     disableBtn.addEventListener('click', async () => {
-      settings.categoryToggles[catId] = false;
-      await saveSettings({ categoryToggles: settings.categoryToggles });
+      const current = await getSettings();
+      current.categoryToggles[catId] = !current.categoryToggles[catId];
+      await saveSettings({ categoryToggles: current.categoryToggles });
       renderCustomBlocklist();
       renderCategories();
       chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
@@ -509,22 +520,33 @@ async function renderCategories() {
     const actionsRow = document.createElement('div');
     actionsRow.className = 'category-actions-row';
 
+    const unblocked = settings.categoryUnblocked[catId] || [];
+    const allUnblocked = unblocked.length >= domains.length;
+
     const unblockAllBtn = document.createElement('button');
-    unblockAllBtn.className = 'category-action-btn';
-    unblockAllBtn.textContent = 'Desbloquear todos';
+    unblockAllBtn.className = 'category-action-btn' + (allUnblocked ? ' btn-active' : '');
+    unblockAllBtn.textContent = allUnblocked ? 'Desbloqueados' : 'Desbloquear todos';
     unblockAllBtn.addEventListener('click', async () => {
-      settings.categoryUnblocked[catId] = [...domains];
-      await saveSettings({ categoryUnblocked: settings.categoryUnblocked });
+      const current = await getSettings();
+      const curUnblocked = current.categoryUnblocked[catId] || [];
+      if (curUnblocked.length >= domains.length) {
+        current.categoryUnblocked[catId] = [];
+      } else {
+        current.categoryUnblocked[catId] = [...domains];
+      }
+      await saveSettings({ categoryUnblocked: current.categoryUnblocked });
       renderCategories();
       chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
     });
 
+    const isDisabled = settings.categoryToggles[catId] === false;
     const disableBtn = document.createElement('button');
-    disableBtn.className = 'category-action-btn';
-    disableBtn.textContent = 'Desactivar bloqueo';
+    disableBtn.className = 'category-action-btn btn-danger' + (isDisabled ? ' btn-active' : '');
+    disableBtn.textContent = isDisabled ? 'Bloquear' : 'Desactivar';
     disableBtn.addEventListener('click', async () => {
-      settings.categoryToggles[catId] = false;
-      await saveSettings({ categoryToggles: settings.categoryToggles });
+      const current = await getSettings();
+      current.categoryToggles[catId] = !current.categoryToggles[catId];
+      await saveSettings({ categoryToggles: current.categoryToggles });
       renderCategories();
       chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
     });

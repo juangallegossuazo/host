@@ -1197,6 +1197,37 @@ html[data-theme="light"] .moon-icon { display: block; }
   opacity: 1;
 }
 
+/* ── Category action buttons ─────────────────────────────────────── */
+
+.category-actions-row,
+.blocklist-actions-row {
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--border);
+}
+
+.category-action-btn {
+  flex: 1;
+  padding: 5px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 10px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s var(--ease);
+}
+
+.category-action-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--theme-border);
+  color: var(--text);
+}
+}
+
 .site-unblock {
   background: transparent;
   border: 1px solid var(--border);

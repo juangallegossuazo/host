@@ -254,7 +254,7 @@ async function renderCustomBlocklist() {
       const removeBtn = document.createElement('button');
       removeBtn.className = 'domain-remove';
       removeBtn.textContent = '\u00D7';
-      removeBtn.title = 'Remove domain';
+      removeBtn.title = 'Quitar dominio';
       removeBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         settings.customBlocklist = settings.customBlocklist.filter(d => d !== domain);
@@ -268,13 +268,41 @@ async function renderCustomBlocklist() {
       list.appendChild(row);
     }
 
+    // Bulk actions row
+    const actionsRow = document.createElement('div');
+    actionsRow.className = 'blocklist-actions-row';
+
+    const unblockAllBtn = document.createElement('button');
+    unblockAllBtn.className = 'category-action-btn';
+    unblockAllBtn.textContent = 'Desbloquear todos';
+    unblockAllBtn.addEventListener('click', async () => {
+      settings.categoryUnblocked[catId] = [...domains];
+      await saveSettings({ categoryUnblocked: settings.categoryUnblocked });
+      renderCustomBlocklist();
+      renderCategories();
+      chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+    });
+
+    const disableBtn = document.createElement('button');
+    disableBtn.className = 'category-action-btn';
+    disableBtn.textContent = 'Desactivar bloqueo';
+    disableBtn.addEventListener('click', async () => {
+      settings.categoryToggles[catId] = false;
+      await saveSettings({ categoryToggles: settings.categoryToggles });
+      renderCustomBlocklist();
+      renderCategories();
+      chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+    });
+
+    actionsRow.append(unblockAllBtn, disableBtn);
+
     header.addEventListener('click', () => {
       const isOpen = list.style.display !== 'none';
       list.style.display = isOpen ? 'none' : 'block';
       section.classList.toggle('expanded', !isOpen);
     });
 
-    section.append(header, list);
+    section.append(header, list, actionsRow);
     container.appendChild(section);
   }
 
@@ -433,7 +461,7 @@ async function renderCategories() {
     const addInput = document.createElement('input');
     addInput.type = 'text';
     addInput.className = 'category-add-input';
-    addInput.placeholder = 'Add domain...';
+    addInput.placeholder = 'Agregar dominio...';
 
     const addBtn = document.createElement('button');
     addBtn.className = 'category-add-btn';
@@ -474,7 +502,33 @@ async function renderCategories() {
     });
 
     addRow.append(addInput, addBtn);
-    table.appendChild(addRow);
+
+    // Bulk actions row
+    const actionsRow = document.createElement('div');
+    actionsRow.className = 'category-actions-row';
+
+    const unblockAllBtn = document.createElement('button');
+    unblockAllBtn.className = 'category-action-btn';
+    unblockAllBtn.textContent = 'Desbloquear todos';
+    unblockAllBtn.addEventListener('click', async () => {
+      settings.categoryUnblocked[catId] = [...domains];
+      await saveSettings({ categoryUnblocked: settings.categoryUnblocked });
+      renderCategories();
+      chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+    });
+
+    const disableBtn = document.createElement('button');
+    disableBtn.className = 'category-action-btn';
+    disableBtn.textContent = 'Desactivar bloqueo';
+    disableBtn.addEventListener('click', async () => {
+      settings.categoryToggles[catId] = false;
+      await saveSettings({ categoryToggles: settings.categoryToggles });
+      renderCategories();
+      chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+    });
+
+    actionsRow.append(unblockAllBtn, disableBtn);
+    table.append(addRow, actionsRow);
 
     header.addEventListener('click', (e) => {
       if (e.target === toggleInput || e.target === slider || toggle.contains(e.target)) return;

@@ -66,27 +66,17 @@ chrome.runtime.onStartup.addListener(async () => {
 
 // --- Icon state ---
 
-async function loadImageData(filename, size) {
-  const url = chrome.runtime.getURL(filename);
-  const resp = await fetch(url);
-  const blob = await resp.blob();
-  const bitmap = await createImageBitmap(blob);
-  const canvas = new OffscreenCanvas(size, size);
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(bitmap, 0, 0, size, size);
-  return ctx.getImageData(0, 0, size, size);
-}
-
 async function updateIconState(isBlocking) {
   const suffix = isBlocking ? '_active' : '';
   try {
-    const [d16, d32, d48, d128] = await Promise.all([
-      loadImageData(`icons/icon16${suffix}.png`, 16),
-      loadImageData(`icons/icon32${suffix}.png`, 32),
-      loadImageData(`icons/icon48${suffix}.png`, 48),
-      loadImageData(`icons/icon128${suffix}.png`, 128),
-    ]);
-    await chrome.action.setIcon({ imageData: { 16: d16, 32: d32, 48: d48, 128: d128 } });
+    await chrome.action.setIcon({
+      path: {
+        16: `icons/icon16${suffix}.png`,
+        32: `icons/icon32${suffix}.png`,
+        48: `icons/icon48${suffix}.png`,
+        128: `icons/icon128${suffix}.png`
+      }
+    });
   } catch (e) {}
 }
 

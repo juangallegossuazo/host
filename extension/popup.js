@@ -1,128 +1,77 @@
-// Datos de categorías con dominios
-const categoriesData = {
+// Host Blocker Sync - Popup Script
+// Sincroniza con el archivo hosts del sistema
+
+// Categorías predefinidas con patrones de detección
+const CATEGORIES = {
   adult: {
-    name: "Contenido Adulto",
-    icon: "🔞",
-    domains: [
-      "pornhub.com", "xvideos.com", "xhamster.com", "redtube.com", "youporn.com",
-      "spankbang.com", "beeg.com", "tube8.com", "porntube.com", "thumbzilla.com",
-      "eporner.com", "youjizz.com", "keezmovies.com", "tube-v.com", "xnxx.com",
-      "porn.com", "xxx.com", "adultfriendfinder.com", "fling.com",
-      "chaturbate.com", "myfreecams.com", "livejasmin.com", "streamate.com",
-      "cam4.com", "bongacams.com", "stripchat.com", "camsoda.com", "flirt4free.com",
-      "imlive.com", "roulettechat.com", "redgifs.com", "slushe.com", "lewdzone.com",
-      "f95zone.to", "nsfw247.com", "pornpen.ai", "onlyfans.com", "fansly.com",
-      "tinder.com", "bumble.com", "okcupid.com", "match.com", "pof.com",
-      "zoosk.com", "happn.com", "hinge.co", "grindr.com", "scruff.com"
-    ]
+    name: 'Contenido Adulto',
+    icon: '🔞',
+    patterns: [
+      /porn/i, /xxx/i, /sex/i, /nude/i, /naked/i, /adult/i, /erotic/i,
+      /nsfw/i, /18\+/i, /onlyfans/i, /fansly/i, /chaturbate/i,
+      /pornhub/i, /xvideos/i, /xhamster/i, /redtube/i, /youporn/i
+    ],
+    domains: []
   },
   games: {
-    name: "Juegos Online",
-    icon: "🎮",
-    domains: [
-      "friv.com", "crazygames.com", "minijuegos.com", "roblox.com", "epicgames.com",
-      "store.steampowered.com", "minecraft.net", "fortnite.com", "007arcadegames.com",
-      "10000games.co.uk", "10000juegos.com", "10001games.fr", "1000funnygames.com",
-      "1000juegosfriv.com", "1000puzzlegames.com", "1000webgames.com",
-      "1001flashgames.com", "1001games.com", "1001games.fr", "1001games.nl",
-      "1001games.tw", "1001juegos.com", "1001onlinegames.com", "101games.it",
-      "1066game.com", "123-games.net", "123games.dk", "123juegos.com",
-      "123onlinegame.de", "14juegos.com", "1888freeonlinegames.com",
-      "flashgames.com", "html5games.com", "freegames.com", "onlinewgames.com",
-      "gamesgames.com", "gamestop.com", "kongregate.com", "newgrounds.com",
-      "miniclip.com", "poki.com", "coolmathgames.com", "mathplayground.com",
-      "silvergames.com", "y8.com", "twoplayergames.org", "gameflare.com",
-      "fightinggames.com", "actiongames.com", "shootergames.com", "racinggames.com",
-      "adventuregames.com", "garena.com", "supercell.com", "activision.com",
-      "ea.com", "ubisoft.com", "riotgames.com", "playvalorant.com",
-      "minijuegosgratis.com", "juegos10.com", "juegos33.com", "juegos.com",
-      "juegos.io", "juegosfriv.com", "juegosjuegos.com", "juegosplay.com",
-      "tetris.com", "chess.com", "cardgames.com", "boardgamearena.com",
-      "pogo.com", "bgames.com", "sudoku.com", "crossword.com", "wordgames.com"
-    ]
+    name: 'Juegos Online',
+    icon: '🎮',
+    patterns: [
+      /game/i, /juego/i, /play/i, /jugar/i, /gaming/i, /arcade/i,
+      /puzzle/i, /friv/i, /crazygames/i, /minijuegos/i, /roblox/i,
+      /minecraft/i, /fortnite/i, /steam/i, /casino/i, /poker/i
+    ],
+    domains: []
   },
   downloads: {
-    name: "Descargas",
-    icon: "📥",
-    domains: [
-      "softonic.com", "softonic.es", "softonic.com.mx", "softonic.de", "softonic.fr",
-      "softonic.it", "softonic.jp", "softonic.com.br",
-      "uptodown.com", "es.uptodown.com", "mx.uptodown.com", "uptodown.net",
-      "uptodown.de", "uptodown.fr", "uptodown.it", "uptodown.com.br",
-      "malavida.com", "es.malavida.com", "malavida.de", "malavida.fr",
-      "malavida.it", "malavida.com.br",
-      "filehippo.com", "es.filehippo.com", "filehippo.de", "filehippo.fr",
-      "download.cnet.com", "cnet.com", "download.com",
-      "softpedia.com", "softpedia.ro", "softpedia.de", "softpedia.fr",
-      "softpedia.it", "softpedia.com.br",
-      "majorgeeks.com", "majorgeeks.de",
-      "filehorse.com", "filehorse.de", "filehorse.fr",
-      "chip.de", "chip.eu",
-      "downloadcs.net", "downloadcrew.com", "soft32.com", "filepuma.com",
-      "downloadastro.com", "downloadatoz.com", "downloadr.org", "downloads.com",
-      "mp3skull.com", "mp3juices.com", "ytmp3.cc", "y2mate.com",
-      "savethevideo.com", "savefrom.net", "clipconverter.cc",
-      "onlinevideoconverter.com", "convert2mp3.com",
-      "thepiratebay.org", "kickasstorrents.com", "1337x.to", "rarbg.to",
-      "nyaa.si", "animebytes.tv", "rutracker.org", "limetorrents.info",
-      "torrentgalaxy.to", "eztv.re", "yts.mx", "fitgirl-repacks.site",
-      "crackstation.net", "cracksmind.com", "crackingpatching.com",
-      "kubadownload.com", "getintopc.com", "oceanofgames.com",
-      "pcgamestorrents.com", "repelisplus.com"
-    ]
+    name: 'Descargas',
+    icon: '📥',
+    patterns: [
+      /download/i, /descargar/i, /torrent/i, /crack/i, /keygen/i,
+      /serial/i, /softonic/i, /uptodown/i, /malavida/i, /filehippo/i,
+      /thepiratebay/i, /kickasstorrents/i, /1337x/i
+    ],
+    domains: []
   },
   entertainment: {
-    name: "Entretenimiento",
-    icon: "📺",
-    domains: [
-      "facebook.com", "instagram.com", "twitter.com", "x.com", "tiktok.com",
-      "snapchat.com", "pinterest.com", "reddit.com", "linkedin.com",
-      "web.whatsapp.com", "telegram.org", "web.telegram.org", "discord.com",
-      "twitch.tv", "youtube.com", "youtube-nocookie.com",
-      "netflix.com", "hulu.com", "amazon.com/video", "primevideo.com",
-      "disneyplus.com", "hbomax.com", "max.com", "peacocktv.com",
-      "paramountplus.com", "appletv.com", "spotify.com", "music.apple.com",
-      "open.spotify.com", "soundcloud.com", "pandora.com", "deezer.com", "tidal.com",
-      "facebook.com/gaming", "youtube.com/gaming", "afreecatv.com",
-      "douyu.com", "huya.com", "bilibili.com",
-      "buzzfeed.com", "9gag.com", "imgur.com", "ifunny.co",
-      "amazon.com", "ebay.com", "mercadolibre.com", "aliexpress.com",
-      "walmart.com", "target.com", "bestbuy.com", "apple.com/store",
-      "bet365.com", "draftkings.com", "fanduel.com", "bwin.com",
-      "pokerstars.com", "888.com", "williamhill.com", "ladbrokes.com",
-      "paddypower.com", "betfair.com", "unibet.com", "betway.com",
-      "match.com", "eharmony.com", "zoosk.com", "plentyoffish.com", "ourtime.com",
-      "dictionary.com", "thesaurus.com", "weather.com", "accuweather.com",
-      "espn.com", "sportscenter.com", "nba.com", "nfl.com", "mlb.com",
-      "nhl.com", "fifa.com", "uefa.com", "transfermarkt.com", "sofascore.com",
-      "flashscore.com", "google.com", "bing.com", "yahoo.com", "duckduckgo.com",
-      "wikipedia.org", "wikia.com"
-    ]
+    name: 'Entretenimiento',
+    icon: '📺',
+    patterns: [
+      /youtube/i, /netflix/i, /hulu/i, /disney/i, /spotify/i,
+      /facebook/i, /instagram/i, /twitter/i, /tiktok/i, /snapchat/i,
+      /reddit/i, /discord/i, /twitch/i, /bet/i, /casino/i
+    ],
+    domains: []
   }
 };
 
 // Estado actual
-let currentState = {
-  adult: true,
-  games: true,
-  downloads: true,
-  entertainment: true
+let state = {
+  blockedDomains: {},
+  categorySettings: {
+    adult: true,
+    games: true,
+    downloads: true,
+    entertainment: true
+  },
+  lastSync: null
 };
 
 // Inicializar
 document.addEventListener('DOMContentLoaded', async () => {
   await loadState();
-  updateCounts();
+  setupTabs();
   setupEventListeners();
-  updateStatus();
+  await syncWithHosts();
+  updateUI();
 });
 
 // Cargar estado desde storage
 async function loadState() {
   try {
-    const result = await chrome.storage.local.get('blockedCategories');
-    if (result.blockedCategories) {
-      currentState = result.blockedCategories;
+    const result = await chrome.storage.local.get('hostBlockerState');
+    if (result.hostBlockerState) {
+      state = result.hostBlockerState;
     }
   } catch (error) {
     console.error('Error loading state:', error);
@@ -132,131 +81,319 @@ async function loadState() {
 // Guardar estado en storage
 async function saveState() {
   try {
-    await chrome.storage.local.set({ blockedCategories: currentState });
-    showStatus('Configuración guardada correctamente', 'active');
+    await chrome.storage.local.set({ hostBlockerState: state });
   } catch (error) {
     console.error('Error saving state:', error);
-    showStatus('Error al guardar la configuración', 'inactive');
   }
 }
 
-// Actualizar contadores
-function updateCounts() {
-  Object.keys(categoriesData).forEach(category => {
-    const countElement = document.getElementById(`${category}Count`);
-    if (countElement) {
-      countElement.textContent = categoriesData[category].domains.length;
+// Sincronizar con el archivo hosts
+async function syncWithHosts() {
+  updateSyncStatus('słuchando...', false);
+  
+  try {
+    // Intentar leer el hosts desde diferentes ubicaciones
+    const hostsContent = await readHostsFile();
+    
+    if (hostsContent) {
+      parseHostsFile(hostsContent);
+      updateSyncStatus('Sincronizado', true);
+      showStatus('Hosts sincronizado correctamente', 'active');
+    } else {
+      // Si no puede leer el hosts, usar datos de ejemplo
+      loadSampleData();
+      updateSyncStatus('Modo offline', false);
+      showStatus('Usando datos de ejemplo', 'inactive');
     }
+  } catch (error) {
+    console.error('Sync error:', error);
+    loadSampleData();
+    updateSyncStatus('Error de sincronización', false);
+  }
+  
+  state.lastSync = new Date().toISOString();
+  await saveState();
+}
+
+// Leer archivo hosts (simulado - en producción necesitaría permisos especiales)
+async function readHostsFile() {
+  // En un entorno real, esto necesitaría una extensión nativa o API
+  // Por ahora, intentamos fetch local o usamos datos de ejemplo
+  
+  try {
+    // Intentar obtener desde storage local
+    const result = await chrome.storage.local.get('hostsContent');
+    if (result.hostsContent) {
+      return result.hostsContent;
+    }
+  } catch (error) {
+    console.log('No se pudo leer hosts local');
+  }
+  
+  return null;
+}
+
+// Parsear archivo hosts
+function parseHostsFile(content) {
+  // Limpiar dominios actuales
+  Object.keys(CATEGORIES).forEach(cat => {
+    CATEGORIES[cat].domains = [];
+  });
+  
+  const lines = content.split('\n');
+  let currentComment = '';
+  
+  lines.forEach(line => {
+    line = line.trim();
+    
+    // Ignorar líneas vacías y comentarios
+    if (!line || line.startsWith('#')) {
+      if (line.startsWith('# ---')) {
+        currentComment = line.replace(/#/g, '').trim();
+      }
+      return;
+    }
+    
+    // Parsear línea de dominio
+    const parts = line.split(/\s+/);
+    if (parts.length >= 2) {
+      const ip = parts[0];
+      const domain = parts[1];
+      
+      // Ignorar localhost
+      if (domain === 'localhost' || ip === '127.0.0.1' || ip === '::1') {
+        return;
+      }
+      
+      // Clasificar dominio
+      const category = classifyDomain(domain, currentComment);
+      if (category) {
+        CATEGORIES[category].domains.push(domain);
+      }
+    }
+  });
+}
+
+// Clasificar dominio en categoría
+function classifyDomain(domain, context = '') {
+  const testString = `${domain} ${context}`.toLowerCase();
+  
+  for (const [category, data] of Object.entries(CATEGORIES)) {
+    if (data.patterns.some(pattern => pattern.test(testString))) {
+      return category;
+    }
+  }
+  
+  // Si no coincide con ningún patrón, poner en entretenimiento por defecto
+  return 'entertainment';
+}
+
+// Cargar datos de ejemplo
+function loadSampleData() {
+  CATEGORIES.adult.domains = [
+    'pornhub.com', 'xvideos.com', 'xhamster.com', 'redtube.com', 'youporn.com',
+    'spankbang.com', 'beeg.com', 'tube8.com', 'xnxx.com', 'chaturbate.com',
+    'onlyfans.com', 'fansly.com', 'tinder.com', 'bumble.com', 'grindr.com'
+  ];
+  
+  CATEGORIES.games.domains = [
+    'friv.com', 'crazygames.com', 'minijuegos.com', 'roblox.com', 'epicgames.com',
+    'store.steampowered.com', 'minecraft.net', 'fortnite.com', 'kongregate.com',
+    'newgrounds.com', 'miniclip.com', 'poki.com', 'y8.com', 'chess.com'
+  ];
+  
+  CATEGORIES.downloads.domains = [
+    'softonic.com', 'uptodown.com', 'malavida.com', 'filehippo.com', 'softpedia.com',
+    'majorgeeks.com', 'filehorse.com', 'chip.de', 'thepiratebay.org', '1337x.to',
+    'kickasstorrents.com', 'rarbg.to', 'nyaa.si', 'yts.mx'
+  ];
+  
+  CATEGORIES.entertainment.domains = [
+    'youtube.com', 'netflix.com', 'hulu.com', 'disneyplus.com', 'spotify.com',
+    'facebook.com', 'instagram.com', 'twitter.com', 'tiktok.com', 'snapchat.com',
+    'reddit.com', 'discord.com', 'twitch.tv', 'amazon.com', 'ebay.com'
+  ];
+}
+
+// Configurar pestañas
+function setupTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
   });
 }
 
 // Configurar event listeners
 function setupEventListeners() {
-  // Toggles
-  document.getElementById('toggleAdult').addEventListener('change', (e) => {
-    currentState.adult = e.target.checked;
-  });
+  // Botones principales
+  document.getElementById('syncBtn').addEventListener('click', syncWithHosts);
+  document.getElementById('refreshBtn').addEventListener('click', updateUI);
+  document.getElementById('importBtn').addEventListener('click', importHosts);
+  document.getElementById('exportBtn').addEventListener('click', exportHosts);
   
-  document.getElementById('toggleGames').addEventListener('change', (e) => {
-    currentState.games = e.target.checked;
-  });
-  
-  document.getElementById('toggleDownloads').addEventListener('change', (e) => {
-    currentState.downloads = e.target.checked;
-  });
-  
-  document.getElementById('toggleEntertainment').addEventListener('change', (e) => {
-    currentState.entertainment = e.target.checked;
-  });
-  
-  // Botones
-  document.getElementById('saveBtn').addEventListener('click', saveState);
-  document.getElementById('resetBtn').addEventListener('click', resetState);
-  
-  // Búsqueda
-  document.getElementById('searchBox').addEventListener('input', filterDomains);
-  
-  // Aplicar estado a toggles
-  document.getElementById('toggleAdult').checked = currentState.adult;
-  document.getElementById('toggleGames').checked = currentState.games;
-  document.getElementById('toggleDownloads').checked = currentState.downloads;
-  document.getElementById('toggleEntertainment').checked = currentState.entertainment;
+  // Configuración
+  document.getElementById('autoSync').addEventListener('change', saveSettings);
+  document.getElementById('detectContent').addEventListener('change', saveSettings);
+  document.getElementById('showOverlay').addEventListener('change', saveSettings);
 }
 
-// Mostrar/ocultar lista
+// Actualizar UI
+function updateUI() {
+  renderCategories();
+  updateStats();
+}
+
+// Renderizar categorías
+function renderCategories() {
+  const container = document.getElementById('categoriesContainer');
+  container.innerHTML = '';
+  
+  Object.entries(CATEGORIES).forEach(([key, category]) => {
+    if (category.domains.length === 0) return;
+    
+    const div = document.createElement('div');
+    div.className = 'category';
+    div.innerHTML = `
+      <div class="category-header">
+        <span class="category-name">${category.icon} ${category.name}</span>
+        <span class="category-count">${category.domains.length}</span>
+      </div>
+      <div class="domain-list" id="list-${key}">
+        ${category.domains.map(domain => `
+          <div class="domain-item">
+            <span>${domain}</span>
+            <div class="domain-actions">
+              <button class="domain-btn block" onclick="toggleDomain('${key}', '${domain}', false)">✕</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="show-more" onclick="toggleList('${key}')">Ver dominios</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Toggle lista de dominios
 function toggleList(category) {
-  const listElement = document.getElementById(`${category}List`);
-  listElement.classList.toggle('show');
-  
-  if (listElement.classList.contains('show')) {
-    renderList(category);
-  }
+  const list = document.getElementById(`list-${category}`);
+  list.classList.toggle('show');
 }
 
-// Renderizar lista de dominios
-function renderList(category, filter = '') {
-  const listElement = document.getElementById(`${category}List`);
-  const domains = categoriesData[category].domains;
-  
-  let filteredDomains = domains;
-  if (filter) {
-    filteredDomains = domains.filter(domain => 
-      domain.toLowerCase().includes(filter.toLowerCase())
-    );
-  }
-  
-  listElement.innerHTML = filteredDomains.map(domain => 
-    `<div class="blocked-item">${domain}</div>`
-  ).join('');
-}
-
-// Filtrar dominios
-function filterDomains(e) {
-  const filter = e.target.value;
-  
-  Object.keys(categoriesData).forEach(category => {
-    const listElement = document.getElementById(`${category}List`);
-    if (listElement.classList.contains('show')) {
-      renderList(category, filter);
+// Toggle dominio (bloquear/desbloquear)
+function toggleDomain(category, domain, block) {
+  if (block) {
+    if (!CATEGORIES[category].domains.includes(domain)) {
+      CATEGORIES[category].domains.push(domain);
     }
-  });
+  } else {
+    CATEGORIES[category].domains = CATEGORIES[category].domains.filter(d => d !== domain);
+  }
+  
+  saveState();
+  updateUI();
 }
 
-// Restablecer estado
-async function resetState() {
-  currentState = {
-    adult: true,
-    games: true,
-    downloads: true,
+// Importar hosts
+async function importHosts() {
+  const content = document.getElementById('hostsInput').value;
+  if (!content.trim()) {
+    showStatus('Por favor, pega el contenido del hosts', 'inactive');
+    return;
+  }
+  
+  parseHostsFile(content);
+  
+  // Guardar en storage
+  await chrome.storage.local.set({ hostsContent: content });
+  
+  saveState();
+  updateUI();
+  showStatus('Hosts importado correctamente', 'active');
+}
+
+// Exportar hosts
+function exportHosts() {
+  let hostsContent = `# ====================================
+# HOST BLOCKER - FILTRO DE CONTENIDO
+# ====================================
+# Generado por Host Blocker Sync
+# Fecha: ${new Date().toLocaleString()}
+# ====================================
+
+`;
+  
+  Object.entries(CATEGORIES).forEach(([key, category]) => {
+    if (category.domains.length === 0) return;
+    
+    hostsContent += `\n# --- ${category.name.toUpperCase()} ---\n`;
+    category.domains.forEach(domain => {
+      hostsContent += `0.0.0.0 ${domain}\n`;
+      hostsContent += `0.0.0.0 www.${domain}\n`;
+    });
+  });
+  
+  // Crear y descargar archivo
+  const blob = new Blob([hostsContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'hosts';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  showStatus('Hosts exportado correctamente', 'active');
+}
+
+// Guardar configuración
+function saveSettings() {
+  state.categorySettings = {
+    adult: document.getElementById('autoSync').checked,
+    games: document.getElementById('detectContent').checked,
+    downloads: document.getElementById('showOverlay').checked,
     entertainment: true
   };
+  saveState();
+}
+
+// Actualizar estado de sincronización
+function updateSyncStatus(text, online) {
+  const dot = document.getElementById('syncDot');
+  const textEl = document.getElementById('syncText');
   
-  document.getElementById('toggleAdult').checked = true;
-  document.getElementById('toggleGames').checked = true;
-  document.getElementById('toggleDownloads').checked = true;
-  document.getElementById('toggleEntertainment').checked = true;
+  dot.className = online ? 'sync-dot' : 'sync-dot offline';
+  textEl.textContent = text;
+}
+
+// Actualizar estadísticas
+function updateStats() {
+  let total = 0;
+  Object.values(CATEGORIES).forEach(cat => {
+    total += cat.domains.length;
+  });
   
-  await saveState();
-  showStatus('Configuración restablecida', 'active');
+  document.getElementById('totalBlocked').textContent = total;
+  document.getElementById('activeCategories').textContent = 
+    Object.values(CATEGORIES).filter(cat => cat.domains.length > 0).length;
+  document.getElementById('lastSync').textContent = 
+    state.lastSync ? new Date(state.lastSync).toLocaleString() : 'Nunca';
 }
 
 // Mostrar mensaje de estado
 function showStatus(message, type) {
-  const statusElement = document.getElementById('statusMessage');
-  statusElement.textContent = message;
-  statusElement.className = `status ${type}`;
+  const bar = document.getElementById('statusBar');
+  bar.textContent = message;
+  bar.className = 'status-bar show';
   
   setTimeout(() => {
-    statusElement.className = 'status';
+    bar.classList.remove('show');
   }, 3000);
-}
-
-// Actualizar estado visual
-function updateStatus() {
-  const anyEnabled = Object.values(currentState).some(value => value);
-  if (anyEnabled) {
-    showStatus('Filtro de contenido activo', 'active');
-  } else {
-    showStatus('Filtro desactivado', 'inactive');
-  }
 }

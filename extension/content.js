@@ -1,98 +1,75 @@
-// Content script para Host Blocker
-// Se ejecuta en cada página web para detectar y bloquear contenido
+// Host Blocker Sync - Content Script
+// Detecta contenido y sincroniza con el hosts
 
 (function() {
   'use strict';
   
-  // Categorías de contenido con palabras clave
-  const contentCategories = {
-    adult: {
-      keywords: [
-        'porn', 'xxx', 'sex', 'nude', 'naked', 'adult', 'erotic', 'nsfw',
-        'pornhub', 'xvideos', 'xhamster', 'redtube', 'youporn', 'spankbang',
-        'beeg', 'tube8', 'porntube', 'xnxx', 'chaturbate', 'myfreecams',
-        'livejasmin', 'streamate', 'cam4', 'bongacams', 'stripchat',
-        'onlyfans', 'fansly', 'tinder', 'bumble', 'okcupid', 'grindr',
-        'pornografia', 'sexo', 'desnudo', 'adulto', 'erotico', 'nsfw'
-      ],
-      patterns: [
-        /porn/i, /xxx/i, /sex/i, /nude/i, /naked/i, /adult/i, /erotic/i,
-        /nsfw/i, /18\+/i, /onlyfans/i, /fansly/i, /chaturbate/i
-      ]
-    },
-    games: {
-      keywords: [
-        'game', 'juego', 'play', 'jugar', 'gaming', 'arcade', 'puzzle',
-        'friv', 'crazygames', 'minijuegos', 'roblox', 'minecraft', 'fortnite',
-        'steam', 'epicgames', 'garena', 'kongregate', 'newgrounds', 'miniclip',
-        'poki', 'y8', 'tetris', 'chess', 'poker', 'casino', 'bet', 'gambling',
-        'juegos', 'onlinegames', 'flashgames', 'html5games', 'freegames'
-      ],
-      patterns: [
-        /game/i, /juego/i, /play/i, /jugar/i, /gaming/i, /arcade/i,
-        /puzzle/i, /friv/i, /crazygames/i, /minijuegos/i, /roblox/i,
-        /minecraft/i, /fortnite/i, /steam/i, /casino/i, /poker/i
-      ]
-    },
-    downloads: {
-      keywords: [
-        'download', 'descargar', 'torrent', 'crack', 'keygen', 'serial',
-        'softonic', 'uptodown', 'malavida', 'filehippo', 'softpedia',
-        'majorgeeks', 'filehorse', 'chip', 'thepiratebay', 'kickasstorrents',
-        '1337x', 'rarbg', 'nyaa', 'yts', 'fitgirl', 'repack',
-        'descargas', 'bajar', 'bittorrent', 'emule', 'limewire'
-      ],
-      patterns: [
-        /download/i, /descargar/i, /torrent/i, /crack/i, /keygen/i,
-        /serial/i, /softonic/i, /uptodown/i, /malavida/i, /filehippo/i,
-        /thepiratebay/i, /kickasstorrents/i, /1337x/i
-      ]
-    },
-    entertainment: {
-      keywords: [
-        'streaming', 'video', 'music', 'social', 'network', 'news',
-        'youtube', 'netflix', 'hulu', 'disney', 'hbomax', 'spotify',
-        'facebook', 'instagram', 'twitter', 'tiktok', 'snapchat',
-        'reddit', 'discord', 'twitch', 'amazon', 'ebay', 'shopping',
-        'bet', 'casino', 'poker', 'gambling', 'dating', 'match', 'tinder'
-      ],
-      patterns: [
-        /youtube/i, /netflix/i, /hulu/i, /disney/i, /spotify/i,
-        /facebook/i, /instagram/i, /twitter/i, /tiktok/i, /snapchat/i,
-        /reddit/i, /discord/i, /twitch/i, /bet/i, /casino/i
-      ]
-    }
+  // Patrones de contenido por categoría
+  const CONTENT_PATTERNS = {
+    adult: [
+      /porn/i, /xxx/i, /sex/i, /nude/i, /naked/i, /adult/i, /erotic/i,
+      /nsfw/i, /18\+/i, /onlyfans/i, /fansly/i, /chaturbate/i,
+      /pornhub/i, /xvideos/i, /xhamster/i, /redtube/i, /youporn/i
+    ],
+    games: [
+      /game/i, /juego/i, /play/i, /jugar/i, /gaming/i, /arcade/i,
+      /puzzle/i, /friv/i, /crazygames/i, /minijuegos/i, /roblox/i,
+      /minecraft/i, /fortnite/i, /steam/i, /casino/i, /poker/i
+    ],
+    downloads: [
+      /download/i, /descargar/i, /torrent/i, /crack/i, /keygen/i,
+      /serial/i, /softonic/i, /uptodown/i, /malavida/i, /filehippo/i,
+      /thepiratebay/i, /kickasstorrents/i, /1337x/i
+    ]
   };
   
-  // Estado actual
-  let currentCategory = null;
+  // Estado
   let isBlocked = false;
+  let detectedCategory = null;
   
   // Verificar contenido de la página
   function checkPageContent() {
-    const pageContent = document.body ? document.body.innerText.toLowerCase() : '';
-    const pageTitle = document.title.toLowerCase();
-    const metaDescription = document.querySelector('meta[name="description"]');
-    const description = metaDescription ? metaDescription.content.toLowerCase() : '';
+    const pageContent = document.body ? document.body.innerText : '';
+    const pageTitle = document.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const description = metaDesc ? metaDesc.content : '';
     
     const fullContent = `${pageContent} ${pageTitle} ${description}`;
     
-    // Verificar cada categoría
-    for (const [category, data] of Object.entries(contentCategories)) {
-      const hasKeywords = data.keywords.some(keyword => 
-        fullContent.includes(keyword.toLowerCase())
-      );
-      
-      const hasPatterns = data.patterns.some(pattern => 
-        pattern.test(fullContent)
-      );
-      
-      if (hasKeywords || hasPatterns) {
-        return { category, detected: true };
+    for (const [category, patterns] of Object.entries(CONTENT_PATTERNS)) {
+      const hasMatch = patterns.some(pattern => pattern.test(fullContent));
+      if (hasMatch) {
+        return category;
       }
     }
     
-    return { category: null, detected: false };
+    return null;
+  }
+  
+  // Verificar dominio actual
+  function checkCurrentDomain() {
+    const hostname = window.location.hostname;
+    
+    chrome.runtime.sendMessage({
+      action: 'checkDomain',
+      domain: hostname
+    }, (response) => {
+      if (response && response.blocked) {
+        blockPage(response.category);
+      } else {
+        // Si no está bloqueado por dominio, verificar contenido
+        const category = checkPageContent();
+        if (category) {
+          // Notificar al background para posibles sugerencias
+          chrome.runtime.sendMessage({
+            action: 'contentDetected',
+            category: category,
+            url: window.location.href,
+            hostname: hostname
+          });
+        }
+      }
+    });
   }
   
   // Bloquear página
@@ -100,7 +77,7 @@
     if (isBlocked) return;
     
     isBlocked = true;
-    currentCategory = category;
+    detectedCategory = category;
     
     // Crear overlay de bloqueo
     const overlay = document.createElement('div');
@@ -123,12 +100,12 @@
       padding: 20px;
     `;
     
-    const categoryName = {
+    const categoryNames = {
       adult: 'Contenido Adulto',
       games: 'Juegos Online',
       downloads: 'Sitios de Descarga',
       entertainment: 'Entretenimiento'
-    }[category] || 'Contenido No Deseado';
+    };
     
     overlay.innerHTML = `
       <div style="max-width: 500px;">
@@ -141,89 +118,72 @@
         </p>
         <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
           <p style="font-size: 14px; margin-bottom: 5px;">Categoría detectada:</p>
-          <p style="font-size: 20px; font-weight: bold;">${categoryName}</p>
+          <p style="font-size: 20px; font-weight: bold;">${categoryNames[category] || category}</p>
         </div>
-        <p style="font-size: 14px; opacity: 0.8;">
-          El contenido de esta página no está permitido según la configuración actual.
+        <p style="font-size: 14px; opacity: 0.8; margin-bottom: 20px;">
+          Dominio: ${window.location.hostname}
         </p>
-        <button onclick="history.back()" style="
-          margin-top: 20px;
-          padding: 12px 30px;
-          font-size: 16px;
-          background: white;
-          color: #667eea;
-          border: none;
-          border-radius: 25px;
-          cursor: pointer;
-          font-weight: bold;
-          box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-          transition: transform 0.2s;
-        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-          ← Volver Atrás
-        </button>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button onclick="history.back()" style="
+            padding: 12px 30px;
+            font-size: 16px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+          ">← Volver Atrás</button>
+          <button onclick="window.location.href='chrome://settings'" style="
+            padding: 12px 30px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+          ">⚙️ Configurar</button>
+        </div>
       </div>
     `;
     
     document.body.innerHTML = '';
     document.body.appendChild(overlay);
     
-    // Notificar al background script
+    // Notificar al background
     chrome.runtime.sendMessage({
       action: 'pageBlocked',
       category: category,
-      url: window.location.href
+      url: window.location.href,
+      hostname: window.location.hostname
     });
   }
   
-  // Verificar si la página debe ser bloqueada
-  function checkAndBlock() {
-    // Primero verificar con el background script
-    chrome.runtime.sendMessage({
-      action: 'checkDomain',
-      url: window.location.href
-    }, (response) => {
-      if (response && response.blocked) {
-        blockPage(response.category);
-        return;
-      }
-      
-      // Si no está bloqueado por dominio, verificar contenido
-      const contentCheck = checkPageContent();
-      if (contentCheck.detected) {
-        blockPage(contentCheck.category);
-      }
-    });
-  }
-  
-  // Ejecutar verificación
+  // Inicializar
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', checkAndBlock);
+    document.addEventListener('DOMContentLoaded', checkCurrentDomain);
   } else {
-    checkAndBlock();
+    checkCurrentDomain();
   }
   
-  // Observar cambios en el DOM
-  const observer = new MutationObserver((mutations) => {
-    if (!isBlocked) {
-      checkAndBlock();
-    }
-  });
-  
-  if (document.body) {
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-  
-  // Escuchar mensajes del background script
+  // Escuchar mensajes del popup o background
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'forceBlock') {
       blockPage(request.category);
       sendResponse({ blocked: true });
     } else if (request.action === 'checkContent') {
-      const result = checkPageContent();
-      sendResponse(result);
+      const category = checkPageContent();
+      sendResponse({ category: category });
+    } else if (request.action === 'getPageInfo') {
+      sendResponse({
+        hostname: window.location.hostname,
+        url: window.location.href,
+        title: document.title,
+        isBlocked: isBlocked,
+        detectedCategory: detectedCategory
+      });
     }
     return true;
   });

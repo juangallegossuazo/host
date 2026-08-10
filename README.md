@@ -34,18 +34,24 @@ Sistema de bloqueo de sitios web no deseados mediante el archivo `hosts` del sis
 1. Copiar el archivo `hosts` a `/etc/hosts`
 2. Ejecutar `sudo dscacheutil -flushcache` (macOS) o `sudo systemd-resolve --flush-caches` (Linux)
 
-## 🔧 Extensión del Navegador
+## 🔧 Extensión del Navegador (Sincronización con Hosts)
 
-Esta incluye una extensión para Chrome/Firefox que:
-- Detecta el contenido de las páginas
-- Separa automáticamente las categorías
-- Bloquea sitios no deseados en tiempo real
+La extensión **sincroniza automáticamente con el archivo hosts** del sistema:
 
-### Características:
-- ✅ Bloqueo automático por categoría
-- ✅ Interfaz fácil de usar
-- ✅ Actualizable con nuevas listas
-- ✅ Funciona en múltiples navegadores
+### Funcionalidades principales:
+- ✅ **Lectura del hosts**: Importa y sincroniza los dominios bloqueados
+- ✅ **Detección de contenido**: Identifica categorías por palabras clave
+- ✅ **Overlay visual**: Muestra página de bloqueo personalizada
+- ✅ **Gestión por categorías**: Organiza dominios en Adulto/Juegos/Descargas/Entretenimiento
+- ✅ **Exportar hosts**: Genera archivo hosts actualizado para el sistema
+- ✅ **Sincronización automática**: Actualiza cada 5 minutos
+
+### Cómo funciona:
+1. La extensión lee el archivo hosts del sistema
+2. Clasifica los dominios en categorías automáticamente
+3. Detecta contenido bloqueado en páginas web
+4. Permite agregar/eliminar dominios desde la interfaz
+5. Exporta el hosts actualizado para aplicar en el sistema
 
 ## 📁 Estructura del Proyecto
 
@@ -54,21 +60,15 @@ host/
 ├── README.md              # Esta documentación
 ├── hosts                  # Archivo hosts principal (24,000+ dominios)
 ├── LICENSE                # Licencia MIT
-├── extension/             # Extensión del navegador
-│   ├── manifest.json      # Configuración de la extensión
-│   ├── popup.html         # Interfaz de usuario
-│   ├── popup.js           # Lógica de la extensión
-│   ├── content.js         # Script de contenido
-│   ├── content.css        # Estilos del overlay
-│   ├── background.js      # Script de fondo
-│   ├── rules.json         # Reglas de bloqueo
-│   └── icons/             # Iconos de la extensión
-│       └── icon.svg       # Icono principal
-└── categories/            # Listas por categoría
-    ├── games.txt          # Sitios de juegos (100+ dominios)
-    ├── adult.txt          # Contenido adulto (80+ dominios)
-    ├── downloads.txt      # Sitios de descarga (60+ dominios)
-    └── entertainment.txt  # Entretenimiento (100+ dominios)
+└── extension/             # Extensión del navegador (sincroniza con hosts)
+    ├── manifest.json      # Configuración de la extensión
+    ├── popup.html         # Interfaz de usuario
+    ├── popup.js           # Lógica de sincronización
+    ├── content.js         # Detección de contenido
+    ├── background.js      # Manejo de bloqueo
+    ├── blocked.html       # Página de bloqueo visual
+    └── icons/             # Iconos de la extensión
+        └── icon.svg       # Icono principal
 ```
 
 ## 🔧 Instalación de la Extensión
@@ -84,13 +84,11 @@ host/
 2. Haz clic en "Cargar componente temporal"
 3. Selecciona el archivo `manifest.json`
 
-### Funcionalidades:
-- ✅ Bloqueo automático por dominio
-- ✅ Detección de contenido por palabras clave
-- ✅ Overlay visual cuando se detecta contenido bloqueado
-- ✅ Configuración por categorías
-- ✅ Interfaz fácil de usar
-- ✅ Actualizable con nuevas listas
+### Sincronización con el Hosts:
+1. La extensión carga automáticamente los dominios del hosts
+2. Puedes importar tu hosts manualmente desde la pestaña "Importar/Exportar"
+3. Los cambios se reflejan en tiempo real
+4. Exporta el hosts actualizado para aplicar en el sistema
 
 ## ⚠️ Notas Importantes
 

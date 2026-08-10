@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generador de Iconos</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    function generateIcon(size) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = size;
+      canvas.height = size;
+      
+      // Fondo con gradiente
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#667eea');
+      gradient.addColorStop(1, '#764ba2');
+      
+      // Forma de escudo
+      ctx.beginPath();
+      ctx.moveTo(size * 0.5, size * 0.05);
+      ctx.lineTo(size * 0.95, size * 0.25);
+      ctx.lineTo(size * 0.95, size * 0.5);
+      ctx.quadraticCurveTo(size * 0.95, size * 0.75, size * 0.5, size * 0.98);
+      ctx.quadraticCurveTo(size * 0.05, size * 0.75, size * 0.05, size * 0.5);
+      ctx.lineTo(size * 0.05, size * 0.25);
+      ctx.closePath();
+      
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      // Interior blanco semitransparente
+      ctx.beginPath();
+      ctx.moveTo(size * 0.5, size * 0.2);
+      ctx.lineTo(size * 0.8, size * 0.35);
+      ctx.lineTo(size * 0.8, size * 0.55);
+      ctx.quadraticCurveTo(size * 0.8, size * 0.7, size * 0.5, size * 0.88);
+      ctx.quadraticCurveTo(size * 0.2, size * 0.7, size * 0.2, size * 0.55);
+      ctx.lineTo(size * 0.2, size * 0.35);
+      ctx.closePath();
+      
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.fill();
+      
+      // Texto "HB"
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${size * 0.28}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('HB', size * 0.5, size * 0.55);
+      
+      return canvas.toDataURL('image/png');
+    }
+    
+    // Generar iconos
+    const sizes = [16, 48, 128];
+    sizes.forEach(size => {
+      const dataUrl = generateIcon(size);
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `icon${size}.png`;
+      link.textContent = `Descargar icon${size}.png`;
+      document.body.appendChild(link);
+      document.body.appendChild(document.createElement('br'));
+    });
+  </script>
+</body>
+</html>

@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Host Blocker - Filtro de Contenido",
+  "name": "Host Blocker Sync",
   "version": "1.0.0",
-  "description": "Bloquea sitios web no deseados y separa el contenido en categorías",
+  "description": "Sincroniza y gestiona el bloqueo de sitios web desde el archivo hosts",
   "permissions": [
     "activeTab",
     "storage",
     "tabs",
     "webNavigation",
-    "webRequest"
+    "webRequest",
+    "downloads"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -33,17 +34,13 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "css": ["content.css"],
       "run_at": "document_start"
     }
   ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "ruleset_1",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  }
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

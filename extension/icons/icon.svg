@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
     </linearGradient>
   </defs>
   <path d="M50 5 L95 25 L95 50 C95 75 75 95 50 98 C25 95 5 75 5 50 L5 25 Z" 
-        fill="url(#shieldGradient)" stroke="white" stroke-width="2"/>
+        fill="url(#grad)" stroke="white" stroke-width="2"/>
   <path d="M50 20 L80 35 L80 55 C80 70 65 85 50 88 C35 85 20 70 20 55 L20 35 Z" 
         fill="white" opacity="0.3"/>
-  <text x="50" y="65" font-family="Arial, sans-serif" font-size="30" font-weight="bold" 
-        fill="white" text-anchor="middle">🛡️</text>
+  <text x="50" y="62" font-family="Arial" font-size="28" font-weight="bold" 
+        fill="white" text-anchor="middle">HB</text>
 </svg>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Host Blocker - Filtro de Contenido</title>
+  <title>Host Blocker Sync</title>
   <style>
     * {
       margin: 0;
@@ -12,70 +12,112 @@
     }
     
     body {
-      width: 400px;
+      width: 420px;
       min-height: 500px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #f5f5f5;
       color: #333;
     }
     
     .header {
-      background: rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       padding: 20px;
       text-align: center;
-      backdrop-filter: blur(10px);
+      color: white;
     }
     
     .header h1 {
-      color: white;
-      font-size: 24px;
+      font-size: 20px;
       margin-bottom: 5px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
     
     .header p {
-      color: rgba(255, 255, 255, 0.8);
       font-size: 12px;
+      opacity: 0.9;
+    }
+    
+    .sync-status {
+      background: #e3f2fd;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #bbdefb;
+    }
+    
+    .sync-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4caf50;
+      animation: pulse 2s infinite;
+    }
+    
+    .sync-dot.offline {
+      background: #f44336;
+      animation: none;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .sync-text {
+      font-size: 12px;
+      color: #666;
     }
     
     .container {
-      padding: 20px;
+      padding: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
     .category {
       background: white;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
-    }
-    
-    .category:hover {
-      transform: translateY(-2px);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
     .category-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     
-    .category-title {
-      font-size: 16px;
+    .category-name {
+      font-size: 14px;
       font-weight: 600;
-      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
-    .category-icon {
-      font-size: 20px;
+    .category-count {
+      background: #e0e0e0;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      color: #666;
     }
     
     .toggle {
       position: relative;
-      width: 50px;
-      height: 26px;
+      width: 44px;
+      height: 22px;
     }
     
     .toggle input {
@@ -92,19 +134,19 @@
       right: 0;
       bottom: 0;
       background-color: #ccc;
-      transition: 0.4s;
-      border-radius: 34px;
+      transition: 0.3s;
+      border-radius: 22px;
     }
     
     .slider:before {
       position: absolute;
       content: "";
-      height: 20px;
-      width: 20px;
+      height: 16px;
+      width: 16px;
       left: 3px;
       bottom: 3px;
       background-color: white;
-      transition: 0.4s;
+      transition: 0.3s;
       border-radius: 50%;
     }
     
@@ -113,44 +155,56 @@
     }
     
     input:checked + .slider:before {
-      transform: translateX(24px);
+      transform: translateX(22px);
     }
     
-    .category-stats {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: #666;
-      margin-top: 10px;
-    }
-    
-    .stat-value {
-      font-weight: bold;
-      color: #2196F3;
-    }
-    
-    .blocked-list {
-      max-height: 150px;
+    .domain-list {
+      max-height: 120px;
       overflow-y: auto;
-      margin-top: 10px;
+      font-size: 11px;
+      color: #888;
       border-top: 1px solid #eee;
-      padding-top: 10px;
+      padding-top: 8px;
       display: none;
     }
     
-    .blocked-list.show {
+    .domain-list.show {
       display: block;
     }
     
-    .blocked-item {
-      padding: 5px 0;
-      font-size: 11px;
-      color: #666;
+    .domain-item {
+      padding: 3px 0;
       border-bottom: 1px solid #f5f5f5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     
-    .blocked-item:last-child {
+    .domain-item:last-child {
       border-bottom: none;
+    }
+    
+    .domain-actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .domain-btn {
+      padding: 2px 6px;
+      font-size: 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .domain-btn.block {
+      background: #ffcdd2;
+      color: #c62828;
+    }
+    
+    .domain-btn.allow {
+      background: #c8e6c9;
+      color: #2e7d32;
     }
     
     .show-more {
@@ -158,7 +212,7 @@
       cursor: pointer;
       font-size: 12px;
       text-align: center;
-      margin-top: 5px;
+      padding: 5px;
     }
     
     .show-more:hover {
@@ -166,148 +220,187 @@
     }
     
     .footer {
-      background: rgba(255, 255, 255, 0.1);
+      background: white;
       padding: 15px;
-      text-align: center;
-      backdrop-filter: blur(10px);
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 10px;
     }
     
-    .footer button {
-      background: #2196F3;
-      color: white;
+    .btn {
+      flex: 1;
+      padding: 10px;
       border: none;
-      padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 14px;
-      transition: background 0.3s;
+      font-size: 13px;
+      font-weight: 500;
     }
     
-    .footer button:hover {
+    .btn-primary {
+      background: #2196F3;
+      color: white;
+    }
+    
+    .btn-primary:hover {
       background: #1976D2;
     }
     
-    .status {
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+    
+    .btn-secondary:hover {
+      background: #bdbdbd;
+    }
+    
+    .btn-danger {
+      background: #f44336;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #d32f2f;
+    }
+    
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #333;
+      color: white;
+      padding: 8px 15px;
       font-size: 12px;
+      text-align: center;
       display: none;
     }
     
-    .status.active {
-      background: #e8f5e9;
-      color: #2e7d32;
+    .status-bar.show {
       display: block;
     }
     
-    .status.inactive {
-      background: #ffebee;
-      color: #c62828;
-      display: block;
+    .tab-container {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      background: white;
     }
     
-    .search-box {
-      width: 100%;
+    .tab {
+      flex: 1;
       padding: 10px;
-      border: 2px solid #ddd;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab.active {
+      color: #2196F3;
+      border-bottom-color: #2196F3;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .import-export {
+      padding: 15px;
+    }
+    
+    .textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      border: 1px solid #ddd;
       border-radius: 5px;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-    
-    .search-box:focus {
-      outline: none;
-      border-color: #2196F3;
-    }
-    
-    .section-title {
-      color: white;
-      font-size: 14px;
+      font-family: monospace;
+      font-size: 11px;
+      resize: vertical;
       margin-bottom: 10px;
-      opacity: 0.9;
+    }
+    
+    .help-text {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>🛡️ Host Blocker</h1>
-    <p>Filtro de Contenido para Familias</p>
+    <h1>🛡️ Host Blocker Sync</h1>
+    <p>Sincroniza con el archivo hosts del sistema</p>
   </div>
   
-  <div class="container">
-    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar dominio...">
-    
-    <div class="section-title">Categorías de Bloqueo</div>
-    
-    <div class="category" data-category="adult">
-      <div class="category-header">
-        <span class="category-title">🔞 Contenido Adulto</span>
-        <label class="toggle">
-          <input type="checkbox" id="toggleAdult" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="category-stats">
-        <span>Sitios bloqueados: <span class="stat-value" id="adultCount">0</span></span>
-        <span class="show-more" onclick="toggleList('adult')">Ver lista</span>
-      </div>
-      <div class="blocked-list" id="adultList"></div>
+  <div class="sync-status">
+    <div class="sync-dot" id="syncDot"></div>
+    <span class="sync-text" id="syncText">Conectado - Leyendo hosts...</span>
+  </div>
+  
+  <div class="tab-container">
+    <div class="tab active" data-tab="categories">Categorías</div>
+    <div class="tab" data-tab="importexport">Importar/Exportar</div>
+    <div class="tab" data-tab="settings">Configuración</div>
+  </div>
+  
+  <div class="tab-content active" id="categories">
+    <div class="container" id="categoriesContainer">
+      <!-- Categorías se cargan dinámicamente -->
     </div>
-    
-    <div class="category" data-category="games">
-      <div class="category-header">
-        <span class="category-title">🎮 Juegos Online</span>
-        <label class="toggle">
-          <input type="checkbox" id="toggleGames" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="category-stats">
-        <span>Sitios bloqueados: <span class="stat-value" id="gamesCount">0</span></span>
-        <span class="show-more" onclick="toggleList('games')">Ver lista</span>
-      </div>
-      <div class="blocked-list" id="gamesList"></div>
+  </div>
+  
+  <div class="tab-content" id="importexport">
+    <div class="import-export">
+      <div class="section-title">Importar Hosts</div>
+      <p class="help-text">Pega el contenido de tu archivo hosts aquí:</p>
+      <textarea class="textarea" id="hostsInput" placeholder="# Contenido del archivo hosts..."></textarea>
+      <button class="btn btn-primary" id="importBtn" style="width: 100%">📥 Importar Hosts</button>
+      
+      <div class="section-title" style="margin-top: 20px;">Exportar Configuración</div>
+      <p class="help-text">Descarga tu archivo hosts actualizado:</p>
+      <button class="btn btn-primary" id="exportBtn" style="width: 100%">📤 Exportar Hosts</button>
     </div>
-    
-    <div class="category" data-category="downloads">
-      <div class="category-header">
-        <span class="category-title">📥 Descargas</span>
-        <label class="toggle">
-          <input type="checkbox" id="toggleDownloads" checked>
-          <span class="slider"></span>
-        </label>
+  </div>
+  
+  <div class="tab-content" id="settings">
+    <div class="import-export">
+      <div class="section-title">Opciones de Sincronización</div>
+      <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+        <input type="checkbox" id="autoSync" checked>
+        <span style="font-size: 13px;">Sincronización automática al iniciar</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+        <input type="checkbox" id="detectContent" checked>
+        <span style="font-size: 13px;">Detectar contenido bloqueado</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+        <input type="checkbox" id="showOverlay" checked>
+        <span style="font-size: 13px;">Mostrar overlay al bloquear</span>
+      </label>
+      
+      <div class="section-title" style="margin-top: 20px;">Estadísticas</div>
+      <div style="font-size: 12px; color: #666; line-height: 1.8;">
+        <p>Dominios bloqueados: <strong id="totalBlocked">0</strong></p>
+        <p>Categorías activas: <strong id="activeCategories">0</strong></p>
+        <p>Última sincronización: <strong id="lastSync">Nunca</strong></p>
       </div>
-      <div class="category-stats">
-        <span>Sitios bloqueados: <span class="stat-value" id="downloadsCount">0</span></span>
-        <span class="show-more" onclick="toggleList('downloads')">Ver lista</span>
-      </div>
-      <div class="blocked-list" id="downloadsList"></div>
     </div>
-    
-    <div class="category" data-category="entertainment">
-      <div class="category-header">
-        <span class="category-title">📺 Entretenimiento</span>
-        <label class="toggle">
-          <input type="checkbox" id="toggleEntertainment" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="category-stats">
-        <span>Sitios bloqueados: <span class="stat-value" id="entertainmentCount">0</span></span>
-        <span class="show-more" onclick="toggleList('entertainment')">Ver lista</span>
-      </div>
-      <div class="blocked-list" id="entertainmentList"></div>
-    </div>
-    
-    <div id="statusMessage" class="status"></div>
   </div>
   
   <div class="footer">
-    <button id="saveBtn">💾 Guardar Configuración</button>
-    <button id="resetBtn" style="margin-left: 10px; background: #f44336;">🔄 Restablecer</button>
+    <button class="btn btn-secondary" id="refreshBtn">🔄 Actualizar</button>
+    <button class="btn btn-primary" id="syncBtn">⚡ Sincronizar</button>
   </div>
+  
+  <div class="status-bar" id="statusBar"></div>
   
   <script src="popup.js"></script>
 </body>

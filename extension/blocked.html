@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sitio Bloqueado - Host Blocker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .icon {
+      font-size: 100px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    h1 {
+      font-size: 36px;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+    
+    .info-box {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .info-label {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 15px 30px;
+      font-size: 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-primary {
+      background: white;
+      color: #667eea;
+      border: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+    }
+    
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    
+    .category-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .category-adult { background: #e53935; }
+    .category-games { background: #fb8c00; }
+    .category-downloads { background: #43a047; }
+    .category-entertainment { background: #1e88e5; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🛡️</div>
+    <h1>Sitio Bloqueado</h1>
+    <p class="subtitle">Esta página ha sido bloqueada por Host Blocker</p>
+    
+    <div class="category-badge" id="categoryBadge">Cargando...</div>
+    
+    <div class="info-box">
+      <div class="info-label">Dominio detectado:</div>
+      <div class="info-value" id="domain">-</div>
+    </div>
+    
+    <div class="info-box">
+      <div class="info-label">Categoría:</div>
+      <div class="info-value" id="category">-</div>
+    </div>
+    
+    <div class="buttons">
+      <button class="btn btn-primary" onclick="history.back()">← Volver Atrás</button>
+      <button class="btn btn-secondary" onclick="openSettings()">⚙️ Configurar</button>
+    </div>
+    
+    <div class="footer">
+      <p>Host Blocker Sync - Protegiendo tu navegación</p>
+    </div>
+  </div>
+  
+  <script>
+    // Obtener información de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const domain = urlParams.get('domain') || 'Desconocido';
+    const category = urlParams.get('category') || 'general';
+    
+    // Nombres de categorías
+    const categoryNames = {
+      adult: 'Contenido Adulto',
+      games: 'Juegos Online',
+      downloads: 'Descargas',
+      entertainment: 'Entretenimiento',
+      general: 'Contenido No Deseado'
+    };
+    
+    // Colores de categorías
+    const categoryColors = {
+      adult: '#e53935',
+      games: '#fb8c00',
+      downloads: '#43a047',
+      entertainment: '#1e88e5',
+      general: '#757575'
+    };
+    
+    // Actualizar UI
+    document.getElementById('domain').textContent = domain;
+    document.getElementById('category').textContent = categoryNames[category] || category;
+    
+    const badge = document.getElementById('categoryBadge');
+    badge.textContent = categoryNames[category] || category;
+    badge.style.backgroundColor = categoryColors[category] || categoryColors.general;
+    
+    // Abrir configuración
+    function openSettings() {
+      chrome.runtime.openOptionsPage();
+    }
+  </script>
+</body>
+</html>

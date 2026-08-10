@@ -206,38 +206,58 @@ function renderYouTubeSettings() {
 
 // --- Custom Blocklist ---
 
-function renderCustomBlocklist() {
-  const list = document.getElementById('domainList');
-  const emptyMsg = document.getElementById('emptyMessage');
+async function renderCustomBlocklist() {
+  const container = document.getElementById('blocklistCategories');
   const input = document.getElementById('domainInput');
   const addBtn = document.getElementById('addDomainBtn');
+  if (!container) return;
 
-  function renderList() {
-    list.replaceChildren();
-    emptyMsg.style.display = settings.customBlocklist.length === 0 ? 'block' : 'none';
+  const githubPresets = await getGithubPresets();
+  container.replaceChildren();
 
-    for (const domain of settings.customBlocklist) {
-      const li = document.createElement('li');
-      li.className = 'domain-item';
+  for (const [catId, meta] of Object.entries(CATEGORY_META)) {
+    const domains = githubPresets[catId] || [];
+    if (domains.length === 0) continue;
 
-      const nameSpan = document.createElement('span');
-      nameSpan.className = 'domain-name';
-      nameSpan.textContent = domain;
+    const section = document.createElement('div');
+    section.className = 'blocklist-category';
 
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'domain-remove';
-      removeBtn.title = 'Eliminar';
-      removeBtn.textContent = '\u00D7';
-      removeBtn.addEventListener('click', async () => {
-        settings.customBlocklist = settings.customBlocklist.filter(d => d !== domain);
-        await saveSettings({ customBlocklist: settings.customBlocklist });
-        syncWithDjangoApi().catch(() => {});
-        renderList();
-      });
+    const header = document.createElement('div');
+    header.className = 'blocklist-category-header';
 
-      li.append(nameSpan, removeBtn);
-      list.appendChild(li);
+    const icon = document.createElement('span');
+    icon.className = 'blocklist-category-icon';
+    icon.textContent = meta.icon;
+
+    const label = document.createElement('span');
+    label.className = 'blocklist-category-label';
+    label.textContent = meta.label;
+
+    const count = document.createElement('span');
+    count.className = 'blocklist-category-count';
+    count.textContent = domains.length;
+
+    header.append(icon, label, count);
+
+    const list = document.createElement('div');
+    list.className = 'blocklist-category-list';
+    list.style.display = 'none';
+
+    for (const domain of domains) {
+      const row = document.createElement('div');
+      row.className = 'blocklist-domain-row';
+      row.textContent = domain;
+      list.appendChild(row);
     }
+
+    header.addEventListener('click', () => {
+      const isOpen = list.style.display !== 'none';
+      list.style.display = isOpen ? 'none' : 'block';
+      section.classList.toggle('expanded', !isOpen);
+    });
+
+    section.append(header, list);
+    container.appendChild(section);
   }
 
   addBtn.addEventListener('click', addDomain);
@@ -271,10 +291,8 @@ function renderCustomBlocklist() {
     await saveSettings({ customBlocklist: settings.customBlocklist });
     syncWithDjangoApi().catch(() => {});
     input.value = '';
-    renderList();
+    renderCustomBlocklist();
   }
-
-  renderList();
 }
 
 // --- Whitelist ---
@@ -331,133 +349,81 @@ function renderWhitelist() {
 // --- Categories ---
 
 async function renderCategories() {
-  if (!headToggleBound) {
-    headToggleBound = true;
-    document.getElementById('categoryHeadToggle').addEventListener('change', async () => {
-      if (!selectedCategory) return;
-      const headToggle = document.getElementById('categoryHeadToggle');
-      settings.categoryToggles[selectedCategory] = headToggle.checked;
-      await saveSettings({ categoryToggles: settings.categoryToggles });
-      updateTabState(selectedCategory);
-      renderCategoryTable(selectedCategory);
-    });
-  }
-
   const githubPresets = await getGithubPresets();
-  const tabs = document.getElementById('categoriesTabs');
-  tabs.replaceChildren();
+  const grid = document.getElementById('categoriesGrid');
+  grid.replaceChildren();
 
   for (const [catId, meta] of Object.entries(CATEGORY_META)) {
     const domains = githubPresets[catId] || [];
+    const isActive = settings.categoryToggles[catId] || false;
 
-    const tab = document.createElement('button');
-    tab.className = 'category-tab';
-    tab.dataset.catId = catId;
+    const card = document.createElement('div');
+    card.className = 'category-card';
 
-    const iconSpan = document.createElement('span');
-    iconSpan.className = 'category-tab-icon';
-    iconSpan.innerHTML = CATEGORY_ICONS[catId] || '';
+    const header = document.createElement('div');
+    header.className = 'category-card-header';
 
-    const labelSpan = document.createElement('span');
-    labelSpan.className = 'category-tab-label';
-    labelSpan.textContent = meta.label;
+    const left = document.createElement('div');
+    left.className = 'category-card-left';
 
-    const countSpan = document.createElement('span');
-    countSpan.className = 'category-tab-count';
-    countSpan.textContent = domains.length;
+    const icon = document.createElement('span');
+    icon.className = 'category-card-icon';
+    icon.textContent = meta.icon;
 
-    tab.append(iconSpan, labelSpan, countSpan);
+    const info = document.createElement('div');
+    info.className = 'category-card-info';
 
-    tab.addEventListener('click', () => {
-      selectedCategory = catId;
-      updateTabState(catId);
-      renderCategoryTable(catId);
+    const label = document.createElement('span');
+    label.className = 'category-card-label';
+    label.textContent = meta.label;
+
+    const count = document.createElement('span');
+    count.className = 'category-card-count';
+    count.textContent = domains.length + ' sitios';
+
+    info.append(label, count);
+    left.append(icon, info);
+
+    const toggle = document.createElement('label');
+    toggle.className = 'switch';
+
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.checked = isActive;
+
+    const slider = document.createElement('span');
+    slider.className = 'slider';
+
+    toggle.append(input, slider);
+
+    header.append(left, toggle);
+
+    const table = document.createElement('div');
+    table.className = 'category-card-table';
+    table.style.display = 'none';
+
+    for (const domain of domains) {
+      const row = document.createElement('div');
+      row.className = 'category-domain-row';
+      row.textContent = domain;
+      table.appendChild(row);
+    }
+
+    header.addEventListener('click', (e) => {
+      if (e.target === input || e.target === slider || toggle.contains(e.target)) return;
+      const isOpen = table.style.display !== 'none';
+      table.style.display = isOpen ? 'none' : 'block';
+      card.classList.toggle('expanded', !isOpen);
     });
 
-    tabs.appendChild(tab);
-  }
+    input.addEventListener('change', async () => {
+      settings.categoryToggles[catId] = input.checked;
+      await saveSettings({ categoryToggles: settings.categoryToggles });
+      chrome.runtime.sendMessage({ type: 'REBUILD_RULES' }).catch(() => {});
+    });
 
-  if (!selectedCategory || !CATEGORY_META[selectedCategory]) {
-    selectedCategory = Object.keys(CATEGORY_META)[0];
-  }
-  updateTabState(selectedCategory);
-  renderCategoryTable(selectedCategory);
-}
-
-function updateTabState(catId) {
-  document.querySelectorAll('#categoriesTabs .category-tab').forEach(tab => {
-    tab.classList.toggle('active', !!settings.categoryToggles[tab.dataset.catId]);
-    tab.classList.toggle('selected', tab.dataset.catId === catId);
-  });
-}
-
-async function renderCategoryTable(catId) {
-  const meta = CATEGORY_META[catId];
-  const githubPresets = await getGithubPresets();
-  const domains = githubPresets[catId] || [];
-  const isActive = settings.categoryToggles[catId] || false;
-  const unblocked = settings.categoryUnblocked[catId] || [];
-
-  document.getElementById('categoryTableTitle').textContent = meta.label;
-  document.getElementById('categoryHeadToggle').checked = isActive;
-
-  const blockedCount = domains.filter(d => !unblocked.includes(d)).length;
-  document.getElementById('categoryTableSubtitle').textContent = isActive
-    ? 'Bloqueando ' + blockedCount + ' de ' + domains.length + ' sitios'
-    : 'La categoría está desactivada';
-  document.getElementById('categoryTableSummary').textContent =
-    domains.length + ' sitios' + (unblocked.length ? ' \u00B7 ' + unblocked.length + ' permitidos' : '');
-
-  const table = document.getElementById('categoryTable');
-  table.replaceChildren();
-
-  for (const domain of domains) {
-    const isUnblocked = unblocked.includes(domain);
-    const row = document.createElement('div');
-    row.className = 'category-table-row' + (isUnblocked ? ' unblocked' : '');
-
-    const siteCol = document.createElement('span');
-    siteCol.className = 'table-col-site';
-
-    const favicon = document.createElement('img');
-    favicon.className = 'site-favicon';
-    favicon.src = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=32';
-    favicon.loading = 'lazy';
-    favicon.onerror = () => { favicon.style.display = 'none'; };
-
-    const siteName = document.createElement('span');
-    siteName.className = 'site-name';
-    siteName.textContent = domain;
-
-    siteCol.append(favicon, siteName);
-
-    const statusCol = document.createElement('span');
-    statusCol.className = 'table-col-status';
-
-    const stateSpan = document.createElement('span');
-    stateSpan.className = 'site-state';
-    if (isUnblocked) {
-      stateSpan.textContent = 'Permitido';
-    } else if (isActive) {
-      stateSpan.textContent = 'Bloqueado';
-    } else {
-      stateSpan.textContent = 'Inactivo';
-      stateSpan.classList.add('inactive');
-    }
-    statusCol.appendChild(stateSpan);
-
-    const actionCol = document.createElement('span');
-    actionCol.className = 'table-col-action';
-
-    const siteBtn = document.createElement('button');
-    siteBtn.className = 'site-unblock' + (isUnblocked ? ' undo' : '');
-    siteBtn.textContent = isUnblocked ? 'Bloquear' : 'Permitir';
-    siteBtn.addEventListener('click', () => toggleCategoryDomain(catId, domain));
-
-    actionCol.appendChild(siteBtn);
-
-    row.append(siteCol, statusCol, actionCol);
-    table.appendChild(row);
+    card.append(header, table);
+    grid.appendChild(card);
   }
 }
 

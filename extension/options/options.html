@@ -301,17 +301,15 @@
           <div class="card-head">
             <span class="head-icon" aria-hidden="true">📋</span>
             <div>
-              <h2>Lista Negra (Sitios Bloqueados)</h2>
-              <p class="card-desc">Añade dominios específicos que desees bloquear</p>
+              <h2>Lista Negra por Categoría</h2>
+              <p class="card-desc">Sitios bloqueados organizados por categoría</p>
             </div>
           </div>
           <div class="add-domain-row">
             <input type="text" id="domainInput" placeholder="ejemplo.com" class="input-field">
-            <button class="btn btn-primary" id="addDomainBtn">Añadir Sitio</button>
+            <button class="btn btn-primary" id="addDomainBtn">Añadir</button>
           </div>
-          <p class="input-hint">Todos los subdominios se bloquean automáticamente (ej. <strong>ejemplo.com</strong> bloquea www.ejemplo.com)</p>
-          <ul class="domain-list" id="domainList"></ul>
-          <p class="empty-message" id="emptyMessage">Aún no has añadido sitios personalizados.</p>
+          <div class="blocklist-categories" id="blocklistCategories"></div>
         </section>
 
         <!-- 5. Whitelist Section (Excepciones) -->
@@ -319,15 +317,15 @@
           <div class="card-head">
             <span class="head-icon" aria-hidden="true">✅</span>
             <div>
-              <h2>Lista Blanca (Sitios Permitidos)</h2>
-              <p class="card-desc">Sitios web que jamás serán bloqueados aunque pertenezcan a una categoría restringida</p>
+              <h2>Lista Blanca (Excepciones)</h2>
+              <p class="card-desc">Sitios que nunca se bloquean</p>
             </div>
           </div>
           <div class="add-domain-row">
-            <input type="text" id="whitelistInput" placeholder="docs.google.com" class="input-field">
-            <button class="btn btn-primary" id="addWhitelistBtn">Añadir Excepción</button>
+            <input type="text" id="whitelistInput" placeholder="ejemplo.com" class="input-field">
+            <button class="btn btn-primary" id="addWhitelistBtn">Añadir</button>
           </div>
-          <ul class="domain-list" id="whitelistDomainList" style="margin-top: 14px;"></ul>
+          <ul class="domain-list" id="whitelistDomainList" style="margin-top: 10px;"></ul>
         </section>
 
         <!-- 6. Preset Categories Section -->
@@ -335,34 +333,11 @@
           <div class="card-head">
             <span class="head-icon" aria-hidden="true">📁</span>
             <div>
-              <h2>Categorías Predeterminadas</h2>
-              <p class="card-desc">Bloquea grupos completos de sitios con un solo clic</p>
+              <h2>Categorías</h2>
+              <p class="card-desc">Activa o desactiva cada categoría</p>
             </div>
           </div>
-          <div class="categories-tabs" id="categoriesTabs"></div>
-          <div class="category-table-wrap">
-            <div class="category-table-head">
-              <div class="category-table-heading">
-                <h3 class="category-table-title" id="categoryTableTitle">Selecciona una categoría</h3>
-                <p class="category-table-subtitle" id="categoryTableSubtitle">Elige una categoría superior para administrar sus sitios</p>
-              </div>
-              <div class="category-table-actions">
-                <label class="category-toggle">
-                  <input type="checkbox" id="categoryHeadToggle">
-                  <span class="category-slider"></span>
-                </label>
-                <span class="category-table-summary" id="categoryTableSummary"></span>
-              </div>
-            </div>
-            <div class="category-table">
-              <div class="category-table-row category-table-head-row">
-                <span class="table-col-site">Sitio Web</span>
-                <span class="table-col-status">Estado</span>
-                <span class="table-col-action">Acción</span>
-              </div>
-              <div id="categoryTable"></div>
-            </div>
-          </div>
+          <div class="categories-grid" id="categoriesGrid"></div>
         </section>
 
         <!-- 7. Schedule Section -->
@@ -370,8 +345,8 @@
           <div class="card-head">
             <span class="head-icon" aria-hidden="true">⏰</span>
             <div>
-              <h2>Horario de Productividad</h2>
-              <p class="card-desc">Elige cuándo estará activo el bloqueo automático</p>
+              <h2>Horario</h2>
+              <p class="card-desc">Define cuándo estará activo el bloqueo</p>
             </div>
           </div>
           <div class="schedule-mode-toggle" id="scheduleModeToggle">

@@ -231,15 +231,28 @@ async function renderCustomBlocklist() {
     icon.className = 'blocklist-category-icon';
     icon.textContent = meta.icon;
 
+    const info = document.createElement('div');
+    info.className = 'blocklist-category-info';
+
     const label = document.createElement('span');
     label.className = 'blocklist-category-label';
     label.textContent = meta.label;
+
+    const desc = document.createElement('span');
+    desc.className = 'blocklist-category-desc';
+    desc.textContent = isActive ? 'Bloqueando sitios' : 'Desactivado';
+
+    info.append(label, desc);
 
     const count = document.createElement('span');
     count.className = 'blocklist-category-count';
     count.textContent = domains.length;
 
-    header.append(icon, label, count);
+    const arrow = document.createElement('span');
+    arrow.className = 'blocklist-category-arrow';
+    arrow.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>`;
+
+    header.append(icon, info, count, arrow);
 
     const list = document.createElement('div');
     list.className = 'blocklist-category-list';

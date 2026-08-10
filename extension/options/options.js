@@ -219,8 +219,10 @@ async function renderCustomBlocklist() {
     const domains = githubPresets[catId] || [];
     if (domains.length === 0) continue;
 
+    const isActive = settings.categoryToggles[catId] || false;
+
     const section = document.createElement('div');
-    section.className = 'blocklist-category';
+    section.className = 'blocklist-category ' + (isActive ? 'blk-active' : 'blk-inactive');
 
     const header = document.createElement('div');
     header.className = 'blocklist-category-header';
